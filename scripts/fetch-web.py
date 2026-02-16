@@ -70,44 +70,52 @@ def search_brave(query: str, api_key: str, freshness: Optional[str] = None) -> D
     headers = {
         'Accept': 'application/json',
         'X-Subscription-Token': api_key,
-        'User-Agent': 'TechDigest/2.0'
+        'User-Agent': 'MediaDigest/1.4'
     }
     
-    try:
-        req = Request(url, headers=headers)
-        with urlopen(req, timeout=TIMEOUT) as resp:
-            raw = resp.read()
-            # Handle gzip if server sends it anyway
-            if raw[:2] == b'\x1f\x8b':
-                import gzip
-                raw = gzip.decompress(raw)
-            data = json.loads(raw.decode())
-            
-        results = []
-        if 'web' in data and 'results' in data['web']:
-            for result in data['web']['results']:
-                results.append({
-                    'title': result.get('title', ''),
-                    'link': result.get('url', ''),
-                    'snippet': result.get('description', ''),
-                    'date': datetime.now(timezone.utc).isoformat()  # Search timestamp
-                })
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            req = Request(url, headers=headers)
+            with urlopen(req, timeout=TIMEOUT) as resp:
+                raw = resp.read()
+                # Handle gzip if server sends it anyway
+                if raw[:2] == b'\x1f\x8b':
+                    import gzip
+                    raw = gzip.decompress(raw)
+                data = json.loads(raw.decode())
                 
-        return {
-            'status': 'ok',
-            'query': query,
-            'results': results,
-            'total': len(results)
-        }
-        
-    except Exception as e:
-        return {
-            'status': 'error',
-            'query': query,
-            'error': str(e)[:100],
-            'results': [],
-            'total': 0
-        }
+            results = []
+            if 'web' in data and 'results' in data['web']:
+                for result in data['web']['results']:
+                    results.append({
+                        'title': result.get('title', ''),
+                        'link': result.get('url', ''),
+                        'snippet': result.get('description', ''),
+                        'date': datetime.now(timezone.utc).isoformat()  # Search timestamp
+                    })
+                    
+            return {
+                'status': 'ok',
+                'query': query,
+                'results': results,
+                'total': len(results)
+            }
+            
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait = 2 ** attempt
+                logging.warning(f"Web search retry {attempt+1}/{max_retries} for '{query}': {e} (wait {wait}s)")
+                import time
+                time.sleep(wait)
+            else:
+                return {
+                    'status': 'error',
+                    'query': query,
+                    'error': str(e)[:100],
+                    'results': [],
+                    'total': 0
+                }
 
 
 def filter_content(text: str, must_include: List[str], exclude: List[str]) -> bool:
