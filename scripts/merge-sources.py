@@ -172,17 +172,49 @@ def _build_token_buckets(articles: List[Dict[str, Any]]) -> Dict[int, Set[int]]:
     return candidates
 
 
+def _normalize_url(url: str) -> str:
+    """Normalize a URL for dedup comparison.
+    
+    Strips trailing slashes, query params (utm_*, ref, etc.), fragments,
+    and lowercases the scheme + host.
+    """
+    if not url:
+        return ""
+    import urllib.parse
+    parsed = urllib.parse.urlparse(url.strip())
+    # Lowercase scheme + host
+    scheme = parsed.scheme.lower()
+    host = parsed.netloc.lower()
+    path = parsed.path.rstrip("/")
+    # Strip tracking query params but keep meaningful ones
+    if parsed.query:
+        params = urllib.parse.parse_qs(parsed.query)
+        # Remove common tracking params
+        tracking_prefixes = ("utm_", "ref", "source", "fbclid", "gclid", "mc_", "ncid")
+        cleaned = {k: v for k, v in params.items() 
+                   if not any(k.lower().startswith(p) for p in tracking_prefixes)}
+        query = urllib.parse.urlencode(cleaned, doseq=True) if cleaned else ""
+    else:
+        query = ""
+    result = f"{scheme}://{host}{path}"
+    if query:
+        result += f"?{query}"
+    return result
+
+
 def deduplicate_articles(articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Remove duplicate articles based on title similarity and domain.
+    """Remove duplicate articles based on URL and title similarity.
     
     Uses token-based bucketing to avoid O(n²) SequenceMatcher comparisons.
     Only articles sharing 2+ significant title tokens are compared.
+    Also deduplicates articles with the same normalized URL.
     """
     if not articles:
         return articles
         
     deduplicated = []
     domain_counts = {}
+    seen_urls: Set[str] = set()
     
     # Sort by quality score (highest first) to keep best versions
     articles.sort(key=lambda x: x.get("quality_score", 0), reverse=True)
@@ -199,7 +231,13 @@ def deduplicate_articles(articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]
         
         title = article.get("title", "")
         url = article.get("link", "")
+        norm_url = _normalize_url(url)
         domain = get_domain(url)
+        
+        # URL-based dedup: skip if we already have this exact URL
+        if norm_url and norm_url in seen_urls:
+            logging.debug(f"URL duplicate: '{title}' → {norm_url}")
+            continue
         
         # Mark future candidates as duplicates using SequenceMatcher (only within bucket)
         for j in candidates.get(i, set()):
@@ -217,10 +255,12 @@ def deduplicate_articles(articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]
                 logging.debug(f"Domain oversaturation: {domain} ({domain_count} articles)")
                 continue
             domain_counts[domain] = domain_count + 1
-            
+        
+        if norm_url:
+            seen_urls.add(norm_url)
         deduplicated.append(article)
         
-    logging.info(f"Deduplication: {len(articles)} → {len(deduplicated)} articles")
+    logging.info(f"Deduplication: {len(articles)} → {len(deduplicated)} articles (URL dedup: {len(seen_urls)} unique URLs)")
     return deduplicated
 
 
