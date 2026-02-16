@@ -1,7 +1,7 @@
 ---
 name: media-news-digest
 description: Generate media & entertainment industry news digests. Covers Hollywood trades (THR, Deadline, Variety), box office, streaming, awards season, film festivals, and production news. RSS + Twitter/X + web search pipeline with quality scoring, deduplication, and multi-format output.
-version: "1.1.0"
+version: "1.2.0"
 env:
   - name: X_BEARER_TOKEN
     required: false

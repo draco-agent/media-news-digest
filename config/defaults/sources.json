@@ -1,7 +1,7 @@
 {
   "_description": "Media & entertainment industry news sources. Hollywood trades, streaming, box office, awards coverage.",
   "_updated": "2026-02-16",
-  "_version": "1.1.0",
+  "_version": "1.2.0",
   "sources": [
     {
       "id": "thr-rss",
@@ -322,6 +322,96 @@
       "priority": false,
       "topics": ["production", "deals"],
       "note": "Deadline film reporter - handle needs verification"
+    },
+    {
+      "id": "reddit-movies",
+      "type": "reddit",
+      "name": "r/movies",
+      "subreddit": "movies",
+      "enabled": true,
+      "priority": true,
+      "topics": ["production", "reviews", "streaming"],
+      "note": "Largest film community on Reddit, 35M+ members"
+    },
+    {
+      "id": "reddit-boxoffice",
+      "type": "reddit",
+      "name": "r/boxoffice",
+      "subreddit": "boxoffice",
+      "enabled": true,
+      "priority": true,
+      "topics": ["box-office"],
+      "note": "Dedicated box office tracking and analysis"
+    },
+    {
+      "id": "reddit-television",
+      "type": "reddit",
+      "name": "r/television",
+      "subreddit": "television",
+      "enabled": true,
+      "priority": false,
+      "topics": ["streaming", "production", "reviews"],
+      "note": "TV/streaming discussion"
+    },
+    {
+      "id": "reddit-oscars",
+      "type": "reddit",
+      "name": "r/Oscars",
+      "subreddit": "Oscars",
+      "enabled": true,
+      "priority": false,
+      "topics": ["awards"],
+      "note": "Oscar predictions, campaigns, and discussion"
+    },
+    {
+      "id": "reddit-truefilm",
+      "type": "reddit",
+      "name": "r/TrueFilm",
+      "subreddit": "TrueFilm",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "festivals"],
+      "note": "Serious film discussion and criticism"
+    },
+    {
+      "id": "reddit-flicks",
+      "type": "reddit",
+      "name": "r/flicks",
+      "subreddit": "flicks",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "production"],
+      "note": "Quality film discussion"
+    },
+    {
+      "id": "thr-china-rss",
+      "type": "rss",
+      "name": "THR China",
+      "url": "https://www.hollywoodreporter.com/topic/china/feed/",
+      "enabled": true,
+      "priority": true,
+      "topics": ["china"],
+      "note": "THR China coverage"
+    },
+    {
+      "id": "variety-asia-rss",
+      "type": "rss",
+      "name": "Variety Asia",
+      "url": "https://variety.com/c/asia/feed/",
+      "enabled": true,
+      "priority": true,
+      "topics": ["china", "festivals", "deals"],
+      "note": "Variety Asia coverage including China"
+    },
+    {
+      "id": "deadline-china-rss",
+      "type": "rss",
+      "name": "Deadline China",
+      "url": "https://deadline.com/tag/china/feed/",
+      "enabled": true,
+      "priority": true,
+      "topics": ["china", "deals", "box-office"],
+      "note": "Deadline China tag coverage"
     }
   ]
 }

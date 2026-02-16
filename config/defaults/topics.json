@@ -1,8 +1,32 @@
 {
   "_description": "Topic definitions for media & entertainment digest. Each topic defines a report section.",
   "_updated": "2026-02-16",
-  "_version": "1.1.0",
+  "_version": "1.2.0",
   "topics": [
+    {
+      "id": "china",
+      "emoji": "🇨🇳",
+      "label": "China / 中国影视",
+      "description": "China box office, co-productions, policy, Chinese streaming platforms, Chinese film releases, market trends",
+      "search": {
+        "queries": [
+          "China box office weekend results",
+          "Chinese film industry news 2026",
+          "China movie market streaming",
+          "中国电影 票房"
+        ],
+        "twitter_queries": [
+          "China box office",
+          "Chinese film"
+        ],
+        "must_include": ["China", "Chinese", "Beijing", "Shanghai", "Tencent", "iQiyi", "Douban", "Maoyan", "co-production", "中国"],
+        "exclude": ["recipe", "travel guide"]
+      },
+      "display": {
+        "max_items": 5,
+        "style": "detailed"
+      }
+    },
     {
       "id": "production",
       "emoji": "🎬",
