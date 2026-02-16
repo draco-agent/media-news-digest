@@ -6,7 +6,7 @@ HTML email format optimized for Gmail/Outlook rendering.
 
 Send via `gog gmail send` with `--body-html` flag:
 ```bash
-gog gmail send --to '<EMAIL>' --subject '<SUBJECT>' --body-html-file /tmp/md-email.html
+gog gmail send --to '<EMAIL>' --subject '<SUBJECT>' --body-html "$(cat /tmp/md-email.html)"
 ```
 
 ## Template Structure

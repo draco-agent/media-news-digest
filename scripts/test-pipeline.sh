@@ -4,7 +4,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DEFAULTS="$SCRIPT_DIR/../config/defaults"
-OUTDIR=$(mktemp -d /tmp/tech-digest-test-XXXXXX)
+OUTDIR=$(mktemp -d /tmp/media-digest-test-XXXXXX)
 PASSED=0
 SKIPPED=0
 FAILED=0
@@ -35,9 +35,9 @@ validate_json() {
 run_step "fetch-rss" python3 "$SCRIPT_DIR/fetch-rss.py" --defaults "$DEFAULTS" --hours 24 --output "$OUTDIR/rss.json" --force
 validate_json "$OUTDIR/rss.json" "rss"
 
-# GitHub (always)
-run_step "fetch-github" python3 "$SCRIPT_DIR/fetch-github.py" --defaults "$DEFAULTS" --hours 24 --output "$OUTDIR/github.json" --force
-validate_json "$OUTDIR/github.json" "github"
+# Reddit (always)
+run_step "fetch-reddit" python3 "$SCRIPT_DIR/fetch-reddit.py" --defaults "$DEFAULTS" --hours 24 --output "$OUTDIR/reddit.json" --force
+validate_json "$OUTDIR/reddit.json" "reddit"
 
 # Twitter (skip if no token)
 if [ -n "$X_BEARER_TOKEN" ]; then
@@ -62,7 +62,7 @@ MERGE_ARGS="--output $OUTDIR/merged.json"
 [ -f "$OUTDIR/rss.json" ] && MERGE_ARGS="$MERGE_ARGS --rss $OUTDIR/rss.json"
 [ -f "$OUTDIR/twitter.json" ] && MERGE_ARGS="$MERGE_ARGS --twitter $OUTDIR/twitter.json"
 [ -f "$OUTDIR/web.json" ] && MERGE_ARGS="$MERGE_ARGS --web $OUTDIR/web.json"
-[ -f "$OUTDIR/github.json" ] && MERGE_ARGS="$MERGE_ARGS --github $OUTDIR/github.json"
+[ -f "$OUTDIR/reddit.json" ] && MERGE_ARGS="$MERGE_ARGS --reddit $OUTDIR/reddit.json"
 run_step "merge-sources" python3 "$SCRIPT_DIR/merge-sources.py" $MERGE_ARGS
 validate_json "$OUTDIR/merged.json" "merged"
 

@@ -393,7 +393,7 @@ def main():
 Examples:
     python3 merge-sources.py --rss rss.json --twitter twitter.json --web web.json
     python3 merge-sources.py --rss rss.json --output merged.json --verbose
-    python3 merge-sources.py --archive-dir workspace/archive/tech-digest
+    python3 merge-sources.py --archive-dir workspace/archive/media-digest
         """
     )
     
@@ -450,7 +450,7 @@ Examples:
     
     # Auto-generate unique output path if not specified
     if not args.output:
-        fd, temp_path = tempfile.mkstemp(prefix="tech-digest-merged-", suffix=".json")
+        fd, temp_path = tempfile.mkstemp(prefix="media-digest-merged-", suffix=".json")
         os.close(fd)
         args.output = Path(temp_path)
     

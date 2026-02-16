@@ -237,7 +237,7 @@ Examples:
     
     # Auto-generate output path if not specified
     if not args.output:
-        fd, temp_path = tempfile.mkstemp(prefix="tech-digest-reddit-", suffix=".json")
+        fd, temp_path = tempfile.mkstemp(prefix="media-digest-reddit-", suffix=".json")
         os.close(fd)
         args.output = Path(temp_path)
     

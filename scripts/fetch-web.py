@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fetch web search results for tech digest topics.
+Fetch web search results for media digest topics.
 
 Reads topics.json, performs web searches for each topic's search queries,
 and outputs structured JSON with search results tagged by topics.
@@ -227,7 +227,7 @@ def convert_freshness(hours: int) -> str:
 def main():
     """Main web search function."""
     parser = argparse.ArgumentParser(
-        description="Perform web searches for tech digest topics. "
+        description="Perform web searches for media digest topics. "
                    "Can use Brave Search API (BRAVE_API_KEY) or generate interface for agents.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
@@ -295,7 +295,7 @@ Examples:
     
     # Auto-generate unique output path if not specified
     if not args.output:
-        fd, temp_path = tempfile.mkstemp(prefix="tech-digest-web-", suffix=".json")
+        fd, temp_path = tempfile.mkstemp(prefix="media-digest-web-", suffix=".json")
         os.close(fd)
         args.output = Path(temp_path)
     
