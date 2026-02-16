@@ -111,7 +111,16 @@ Place a **2-4 sentence summary** between the title and topic sections, highlight
 Discord format: use `> ` blockquote. Email format: gray background paragraph.
 
 ### Topic Sections
-Use sections defined in `topics.json` **in the exact order they appear in the file**. The order is intentional — do NOT rearrange sections. Each topic has:
+Output sections in this **exact order** (do NOT rearrange):
+1. 🎬 Production / 制作动态
+2. 💰 Deals & Business / 行业交易
+3. 🎟️ Box Office / 票房
+4. 📺 Streaming / 流媒体
+5. 🏆 Awards / 颁奖季
+6. 🎪 Film Festivals / 电影节
+7. ⭐ Reviews & Buzz / 影评口碑
+
+Each topic has:
 - `emoji` + `label` for headers
 - `display.max_items` for item count (override with <ITEMS_PER_SECTION>)
 
