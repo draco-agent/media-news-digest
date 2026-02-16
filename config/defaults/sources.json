@@ -1,0 +1,287 @@
+{
+  "_description": "Media & entertainment industry news sources. Hollywood trades, streaming, box office, awards coverage.",
+  "_updated": "2026-02-16",
+  "_version": "1.0.0",
+  "sources": [
+    {
+      "id": "thr-rss",
+      "type": "rss",
+      "name": "The Hollywood Reporter",
+      "url": "https://www.hollywoodreporter.com/feed/",
+      "enabled": true,
+      "priority": true,
+      "topics": ["production", "awards", "deals", "box-office", "streaming"],
+      "note": "Premier Hollywood trade publication"
+    },
+    {
+      "id": "deadline-rss",
+      "type": "rss",
+      "name": "Deadline",
+      "url": "https://deadline.com/feed/",
+      "enabled": true,
+      "priority": true,
+      "topics": ["production", "deals", "box-office", "streaming"],
+      "note": "Fastest breaking news in Hollywood"
+    },
+    {
+      "id": "variety-rss",
+      "type": "rss",
+      "name": "Variety",
+      "url": "https://variety.com/feed/",
+      "enabled": true,
+      "priority": true,
+      "topics": ["production", "awards", "deals", "box-office", "streaming"],
+      "note": "Deep reporting + box office data"
+    },
+    {
+      "id": "screendaily-rss",
+      "type": "rss",
+      "name": "Screen Daily",
+      "url": "https://www.screendaily.com/feeds/rss",
+      "enabled": true,
+      "priority": true,
+      "topics": ["festivals", "deals", "production"],
+      "note": "International film market & distribution"
+    },
+    {
+      "id": "indiewire-rss",
+      "type": "rss",
+      "name": "IndieWire",
+      "url": "https://www.indiewire.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "festivals", "awards", "production"],
+      "note": "Independent film + criticism"
+    },
+    {
+      "id": "thewrap-rss",
+      "type": "rss",
+      "name": "The Wrap",
+      "url": "https://www.thewrap.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["production", "deals", "box-office", "streaming"],
+      "note": "Hollywood business news"
+    },
+    {
+      "id": "collider-rss",
+      "type": "rss",
+      "name": "Collider",
+      "url": "https://collider.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["production", "reviews", "streaming"],
+      "note": "Movie & TV news + reviews"
+    },
+    {
+      "id": "vulture-rss",
+      "type": "rss",
+      "name": "Vulture",
+      "url": "https://www.vulture.com/feed/rss/index.xml",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "production", "streaming"],
+      "note": "New York Magazine culture vertical"
+    },
+    {
+      "id": "awardsdaily-rss",
+      "type": "rss",
+      "name": "Awards Daily",
+      "url": "https://www.awardsdaily.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["awards"],
+      "note": "Awards season specialist"
+    },
+    {
+      "id": "goldderby-rss",
+      "type": "rss",
+      "name": "Gold Derby",
+      "url": "https://www.goldderby.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["awards"],
+      "note": "Oscar/Emmy predictions & analysis"
+    },
+    {
+      "id": "screenrant-rss",
+      "type": "rss",
+      "name": "Screen Rant",
+      "url": "https://screenrant.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["production", "reviews", "streaming"],
+      "note": "Mass-market movie/TV news"
+    },
+    {
+      "id": "empireonline-rss",
+      "type": "rss",
+      "name": "Empire",
+      "url": "https://www.empireonline.com/movies/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "production"],
+      "note": "UK-based film magazine"
+    },
+    {
+      "id": "playlist-rss",
+      "type": "rss",
+      "name": "The Playlist",
+      "url": "https://theplaylist.net/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "festivals", "production"],
+      "note": "Film picks & reviews"
+    },
+    {
+      "id": "ew-rss",
+      "type": "rss",
+      "name": "Entertainment Weekly",
+      "url": "https://ew.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["production", "reviews", "streaming"],
+      "note": "Mainstream entertainment coverage"
+    },
+    {
+      "id": "slashfilm-rss",
+      "type": "rss",
+      "name": "/Film",
+      "url": "https://www.slashfilm.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "production"],
+      "note": "Film news & original reporting"
+    },
+    {
+      "id": "thr-twitter",
+      "type": "twitter",
+      "name": "The Hollywood Reporter",
+      "handle": "THR",
+      "enabled": true,
+      "priority": true,
+      "topics": ["production", "awards", "deals", "box-office"],
+      "note": "THR official"
+    },
+    {
+      "id": "deadline-twitter",
+      "type": "twitter",
+      "name": "Deadline",
+      "handle": "DEADLINE",
+      "enabled": true,
+      "priority": true,
+      "topics": ["production", "deals", "box-office"],
+      "note": "Deadline official"
+    },
+    {
+      "id": "variety-twitter",
+      "type": "twitter",
+      "name": "Variety",
+      "handle": "Variety",
+      "enabled": true,
+      "priority": true,
+      "topics": ["production", "awards", "deals", "streaming"],
+      "note": "Variety official"
+    },
+    {
+      "id": "screendaily-twitter",
+      "type": "twitter",
+      "name": "Screen Daily",
+      "handle": "Aboringtwat",
+      "enabled": false,
+      "priority": false,
+      "topics": ["festivals", "deals"],
+      "note": "Screen Daily - handle needs verification"
+    },
+    {
+      "id": "filmupdates-twitter",
+      "type": "twitter",
+      "name": "Film Updates",
+      "handle": "FilmUpdates",
+      "enabled": true,
+      "priority": false,
+      "topics": ["production", "box-office"],
+      "note": "Fast film news aggregator"
+    },
+    {
+      "id": "scottfeinberg-twitter",
+      "type": "twitter",
+      "name": "Scott Feinberg",
+      "handle": "ScottFeinberg",
+      "enabled": true,
+      "priority": true,
+      "topics": ["awards"],
+      "note": "THR awards columnist, Oscar authority"
+    },
+    {
+      "id": "kristapley-twitter",
+      "type": "twitter",
+      "name": "Kristopher Tapley",
+      "handle": "kristapley",
+      "enabled": true,
+      "priority": false,
+      "topics": ["awards"],
+      "note": "Variety awards journalist"
+    },
+    {
+      "id": "discussingfilm-twitter",
+      "type": "twitter",
+      "name": "DiscussingFilm",
+      "handle": "DiscussingFilm",
+      "enabled": true,
+      "priority": false,
+      "topics": ["production", "box-office", "streaming"],
+      "note": "Major film news account"
+    },
+    {
+      "id": "boxoffice-twitter",
+      "type": "twitter",
+      "name": "Box Office Mojo",
+      "handle": "BoxOfficeMojo",
+      "enabled": true,
+      "priority": true,
+      "topics": ["box-office"],
+      "note": "Official box office data"
+    },
+    {
+      "id": "giteshpandya-twitter",
+      "type": "twitter",
+      "name": "Gitesh Pandya",
+      "handle": "GiteshPandya",
+      "enabled": true,
+      "priority": false,
+      "topics": ["box-office"],
+      "note": "Box Office Guru founder"
+    },
+    {
+      "id": "mattbelloni-twitter",
+      "type": "twitter",
+      "name": "Matt Belloni",
+      "handle": "MattBelloni",
+      "enabled": true,
+      "priority": false,
+      "topics": ["deals", "production"],
+      "note": "Puck News, ex-THR editor"
+    },
+    {
+      "id": "borys-twitter",
+      "type": "twitter",
+      "name": "Borys Kit",
+      "handle": "Borys_Kit",
+      "enabled": true,
+      "priority": false,
+      "topics": ["production", "deals"],
+      "note": "THR film reporter, scoops"
+    },
+    {
+      "id": "krolljvar-twitter",
+      "type": "twitter",
+      "name": "Justin Kroll",
+      "handle": "kaboringtwat",
+      "enabled": false,
+      "priority": false,
+      "topics": ["production", "deals"],
+      "note": "Deadline film reporter - handle needs verification"
+    }
+  ]
+}
