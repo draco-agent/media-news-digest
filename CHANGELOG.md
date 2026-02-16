@@ -1,0 +1,46 @@
+# Changelog
+
+## [1.3.0] - 2026-02-16
+
+### Added
+- 🇨🇳 **China / 中国影视** section (1st position) — China box office, co-productions, policy, streaming platforms
+- 🎞️ **Upcoming Releases / 北美近期上映** section (4th position) — theater openings, release date announcements, scheduling moves
+- 6 Reddit sources: r/movies, r/boxoffice, r/television, r/Oscars, r/TrueFilm, r/flicks
+- 3 China-specific RSS feeds: THR China, Variety Asia, Deadline China
+- Reddit pipeline step in digest-prompt
+
+### Changed
+- Expanded to 9 topic sections (from 7)
+- Total sources: 41 (19 RSS + 11 Twitter + 6 Reddit + Web Search)
+
+## [1.2.0] - 2026-02-16
+
+### Added
+- 🇨🇳 China section and RSS feeds
+- Reddit data layer (6 subreddits)
+
+## [1.1.0] - 2026-02-16
+
+### Added
+- 4 replacement RSS sources: JoBlo, FirstShowing.net, ComingSoon.net, World of Reel
+
+### Changed
+- Improved production topic search queries (greenlit, sequel, filming keywords)
+- Enforce all topic sections appear in report (min 1 item)
+- Hardcode section order in digest-prompt (production → deals first)
+- Cross-section deduplication rule
+
+### Fixed
+- Disabled broken RSS feeds: Vulture (404), Screen Daily (404), EW (403)
+
+## [1.0.0] - 2026-02-16
+
+### Added
+- Initial release
+- 15 RSS feeds: THR, Deadline, Variety, Screen Daily, IndieWire, The Wrap, Collider, Vulture, Awards Daily, Gold Derby, Screen Rant, Empire, The Playlist, EW, /Film
+- 13 Twitter/X KOLs
+- 7 topic sections: Box Office, Streaming, Production, Awards, Deals, Festivals, Reviews
+- Pipeline scripts (fetch-rss, fetch-twitter, fetch-web, merge-sources)
+- Discord + email templates
+- Chinese body text with English source links
+- Cron-ready digest-prompt.md template
