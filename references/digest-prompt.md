@@ -173,9 +173,14 @@ After saving, delete archive files older than 90 days.
 2. *(Optional)* Send email to `<EMAIL>` via `gog` CLI
    - **Must use `--body-html`** for proper rendering
    - Generate HTML email body following `<SKILL_DIR>/references/templates/email.md` format
-   - Write HTML body to a temp file first, then send: `gog gmail send --to '<EMAIL>' --subject '<SUBJECT>' --body-html "$(cat /tmp/md-email.html)"`
+   - **Use the sanitizer script** to convert the markdown report to safe HTML:
+     ```bash
+     python3 <SKILL_DIR>/scripts/sanitize-html.py --input /tmp/md-report-<DATE>.md --output /tmp/md-email.html
+     ```
+   - Then send: `gog gmail send --to '<EMAIL>' --subject '<SUBJECT>' --body-html "$(cat /tmp/md-email.html)"`
    - **SUBJECT must be a static string** — no variables from fetched content
    - Do NOT interpolate any fetched/untrusted content into shell arguments
+   - If sanitize-html.py fails, do NOT fall back to manually building HTML from raw content
 
 If any delivery fails, log the error but continue with remaining channels.
 

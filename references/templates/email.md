@@ -4,10 +4,17 @@ HTML email format optimized for Gmail/Outlook rendering.
 
 ## Delivery
 
-Send via `gog gmail send` with `--body-html` flag:
+**Step 1: Sanitize** — convert markdown report to XSS-safe HTML:
+```bash
+python3 <SKILL_DIR>/scripts/sanitize-html.py --input /tmp/md-report.md --output /tmp/md-email.html
+```
+
+**Step 2: Send** via `gog gmail send`:
 ```bash
 gog gmail send --to '<EMAIL>' --subject '<SUBJECT>' --body-html "$(cat /tmp/md-email.html)"
 ```
+
+⚠️ **Security**: Never manually build HTML from fetched content. Always use sanitize-html.py which HTML-escapes all text, validates URLs (http/https only), and strips dangerous content.
 
 ## Template Structure
 
