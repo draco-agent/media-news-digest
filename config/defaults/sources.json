@@ -38,10 +38,10 @@
       "type": "rss",
       "name": "Screen Daily",
       "url": "https://www.screendaily.com/feeds/rss",
-      "enabled": true,
+      "enabled": false,
       "priority": true,
       "topics": ["festivals", "deals", "production"],
-      "note": "International film market & distribution"
+      "note": "International film market & distribution — RSS 404, disabled"
     },
     {
       "id": "indiewire-rss",
@@ -78,7 +78,7 @@
       "type": "rss",
       "name": "Vulture",
       "url": "https://www.vulture.com/feed/rss/index.xml",
-      "enabled": true,
+      "enabled": false,
       "priority": false,
       "topics": ["reviews", "production", "streaming"],
       "note": "New York Magazine culture vertical"
@@ -138,7 +138,7 @@
       "type": "rss",
       "name": "Entertainment Weekly",
       "url": "https://ew.com/feed/",
-      "enabled": true,
+      "enabled": false,
       "priority": false,
       "topics": ["production", "reviews", "streaming"],
       "note": "Mainstream entertainment coverage"
