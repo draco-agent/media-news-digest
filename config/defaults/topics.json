@@ -1,7 +1,7 @@
 {
   "_description": "Topic definitions for media & entertainment digest. Each topic defines a report section.",
   "_updated": "2026-02-16",
-  "_version": "1.2.0",
+  "_version": "1.3.0",
   "topics": [
     {
       "id": "china",
@@ -146,6 +146,29 @@
       },
       "display": {
         "max_items": 6,
+        "style": "detailed"
+      }
+    },
+    {
+      "id": "upcoming",
+      "emoji": "🎞️",
+      "label": "Upcoming Releases / 北美近期上映",
+      "description": "Movies opening this week and next in North American theaters, release date changes, trailer drops",
+      "search": {
+        "queries": [
+          "movies opening this week theaters",
+          "new movie releases this weekend North America",
+          "upcoming movie release date 2026"
+        ],
+        "twitter_queries": [
+          "opening this weekend",
+          "in theaters now"
+        ],
+        "must_include": ["opening", "release date", "in theaters", "premiere", "trailer", "debuts"],
+        "exclude": ["streaming release", "DVD", "Blu-ray"]
+      },
+      "display": {
+        "max_items": 5,
         "style": "detailed"
       }
     },

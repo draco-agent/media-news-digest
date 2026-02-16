@@ -130,7 +130,8 @@ Output sections in this **exact order** (do NOT rearrange):
 5. 📺 Streaming / 流媒体
 6. 🏆 Awards / 颁奖季
 7. 🎪 Film Festivals / 电影节
-8. ⭐ Reviews & Buzz / 影评口碑
+8. 🎞️ Upcoming Releases / 北美近期上映
+9. ⭐ Reviews & Buzz / 影评口碑
 
 Each topic has:
 - `emoji` + `label` for headers
