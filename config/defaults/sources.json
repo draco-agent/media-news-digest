@@ -154,6 +154,46 @@
       "note": "Film news & original reporting"
     },
     {
+      "id": "joblo-rss",
+      "type": "rss",
+      "name": "JoBlo",
+      "url": "https://www.joblo.com/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "production", "streaming"],
+      "note": "Movie news + reviews"
+    },
+    {
+      "id": "firstshowing-rss",
+      "type": "rss",
+      "name": "FirstShowing.net",
+      "url": "https://www.firstshowing.net/feed/",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "festivals", "production"],
+      "note": "Alex Billington's independent film site"
+    },
+    {
+      "id": "comingsoon-rss",
+      "type": "rss",
+      "name": "ComingSoon.net",
+      "url": "https://www.comingsoon.net/feed",
+      "enabled": true,
+      "priority": false,
+      "topics": ["production", "streaming", "reviews"],
+      "note": "New releases, trailers, streaming news"
+    },
+    {
+      "id": "worldofreel-rss",
+      "type": "rss",
+      "name": "World of Reel",
+      "url": "https://www.worldofreel.com/blog?format=rss",
+      "enabled": true,
+      "priority": false,
+      "topics": ["reviews", "festivals"],
+      "note": "Film criticism + festival coverage"
+    },
+    {
       "id": "thr-twitter",
       "type": "twitter",
       "name": "The Hollywood Reporter",
