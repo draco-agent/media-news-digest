@@ -129,7 +129,7 @@ def batch_resolve_user_ids(handles: List[str], bearer_token: str, no_cache: bool
             url = f"{USER_LOOKUP_ENDPOINT}?{urlencode({'usernames': ','.join(batch)})}"
             headers = {
                 "Authorization": f"Bearer {bearer_token}",
-                "User-Agent": "TechDigest/2.0"
+                "User-Agent": "MediaDigest/1.4"
             }
             try:
                 req = Request(url, headers=headers)
@@ -194,7 +194,7 @@ def fetch_user_tweets(source: Dict[str, Any], bearer_token: str, cutoff: datetim
                 user_url = f"{USER_LOOKUP_ENDPOINT}?{urlencode({'usernames': handle})}"
                 headers = {
                     "Authorization": f"Bearer {bearer_token}",
-                    "User-Agent": "TechDigest/2.0"
+                    "User-Agent": "MediaDigest/1.4"
                 }
                 
                 req = Request(user_url, headers=headers)
@@ -208,7 +208,7 @@ def fetch_user_tweets(source: Dict[str, Any], bearer_token: str, cutoff: datetim
             
             headers = {
                 "Authorization": f"Bearer {bearer_token}",
-                "User-Agent": "TechDigest/2.0"
+                "User-Agent": "MediaDigest/1.4"
             }
             
             # Rate limit: space out API calls

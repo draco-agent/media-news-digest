@@ -276,7 +276,7 @@ def fetch_feed_with_retry(source: Dict[str, Any], cutoff: datetime, no_cache: bo
     for attempt in range(RETRY_COUNT + 1):
         try:
             global _rss_cache_dirty
-            req_headers = {"User-Agent": "TechDigest/2.0"}
+            req_headers = {"User-Agent": "MediaDigest/1.4"}
             
             # Add conditional headers from cache
             cache = _get_rss_cache(no_cache)

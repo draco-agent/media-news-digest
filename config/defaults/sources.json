@@ -15,7 +15,9 @@
         "awards",
         "deals",
         "box-office",
-        "streaming"
+        "streaming",
+        "upcoming",
+        "china"
       ],
       "note": "Premier Hollywood trade publication"
     },
@@ -30,7 +32,9 @@
         "production",
         "deals",
         "box-office",
-        "streaming"
+        "streaming",
+        "upcoming",
+        "china"
       ],
       "note": "Fastest breaking news in Hollywood"
     },
@@ -46,7 +50,9 @@
         "awards",
         "deals",
         "box-office",
-        "streaming"
+        "streaming",
+        "upcoming",
+        "china"
       ],
       "note": "Deep reporting + box office data"
     },
@@ -90,7 +96,8 @@
         "production",
         "deals",
         "box-office",
-        "streaming"
+        "streaming",
+        "upcoming"
       ],
       "note": "Hollywood business news"
     },
@@ -104,7 +111,8 @@
       "topics": [
         "production",
         "reviews",
-        "streaming"
+        "streaming",
+        "upcoming"
       ],
       "note": "Movie & TV news + reviews"
     },
@@ -156,7 +164,8 @@
       "topics": [
         "production",
         "reviews",
-        "streaming"
+        "streaming",
+        "upcoming"
       ],
       "note": "Mass-market movie/TV news"
     },
@@ -224,7 +233,8 @@
       "topics": [
         "reviews",
         "production",
-        "streaming"
+        "streaming",
+        "upcoming"
       ],
       "note": "Movie news + reviews"
     },
@@ -238,7 +248,8 @@
       "topics": [
         "reviews",
         "festivals",
-        "production"
+        "production",
+        "upcoming"
       ],
       "note": "Alex Billington's independent film site"
     },
@@ -252,7 +263,8 @@
       "topics": [
         "production",
         "streaming",
-        "reviews"
+        "reviews",
+        "upcoming"
       ],
       "note": "New releases, trailers, streaming news"
     },
@@ -335,7 +347,8 @@
       "priority": false,
       "topics": [
         "production",
-        "box-office"
+        "box-office",
+        "upcoming"
       ],
       "note": "Fast film news aggregator"
     },
@@ -373,7 +386,9 @@
       "topics": [
         "production",
         "box-office",
-        "streaming"
+        "streaming",
+        "upcoming",
+        "china"
       ],
       "note": "Major film news account"
     },
@@ -385,7 +400,8 @@
       "enabled": true,
       "priority": true,
       "topics": [
-        "box-office"
+        "box-office",
+        "china"
       ],
       "note": "Official box office data"
     },
@@ -450,7 +466,8 @@
       "topics": [
         "production",
         "reviews",
-        "streaming"
+        "streaming",
+        "upcoming"
       ],
       "note": "Largest film community on Reddit, 35M+ members",
       "sort": "hot",
@@ -465,7 +482,8 @@
       "enabled": true,
       "priority": true,
       "topics": [
-        "box-office"
+        "box-office",
+        "china"
       ],
       "note": "Dedicated box office tracking and analysis",
       "sort": "hot",
