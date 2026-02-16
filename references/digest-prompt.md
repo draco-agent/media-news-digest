@@ -111,7 +111,7 @@ Place a **2-4 sentence summary** between the title and topic sections, highlight
 Discord format: use `> ` blockquote. Email format: gray background paragraph.
 
 ### Topic Sections
-Use sections defined in `topics.json`. Each topic has:
+Use sections defined in `topics.json` **in the exact order they appear in the file**. The order is intentional — do NOT rearrange sections. Each topic has:
 - `emoji` + `label` for headers
 - `display.max_items` for item count (override with <ITEMS_PER_SECTION>)
 
