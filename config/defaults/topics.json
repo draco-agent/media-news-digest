@@ -10,12 +10,19 @@
       "description": "New projects greenlit, casting announcements, filming starts/wraps, director/writer attachments",
       "search": {
         "queries": [
-          "new movie project announced",
-          "casting news Hollywood",
-          "film production start"
+          "new movie project announced greenlit 2026",
+          "casting announcement Hollywood film",
+          "film production start wrap filming",
+          "director attached new movie project",
+          "movie sequel reboot announced"
         ],
-        "must_include": ["cast", "direct", "greenlit", "production", "star in", "attached to"],
-        "exclude": ["fan cast", "rumor"]
+        "twitter_queries": [
+          "cast in new movie",
+          "greenlit film project",
+          "starts filming"
+        ],
+        "must_include": ["cast", "direct", "greenlit", "production", "star in", "attached to", "filming", "sequel", "reboot", "adapt"],
+        "exclude": ["fan cast", "rumor", "wishlist"]
       },
       "display": {
         "max_items": 8,

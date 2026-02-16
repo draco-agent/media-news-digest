@@ -127,10 +127,12 @@ Use sections defined in `topics.json`. Each topic has:
 
 ### Rules
 - **Only include news from the <TIME_WINDOW>**
+- **Every topic defined in `topics.json` MUST appear in the report** — even if only 1-2 items. If a topic has very few articles, include what's available with a note like "本日该板块较少"
 - **Every item must include the source link** — no exceptions. Discord: wrap in `<link>`
-- **<ITEMS_PER_SECTION> items per section**
+- **<ITEMS_PER_SECTION> items per section** (minimum 1)
 - **Use bullet lists, no markdown tables** (Discord compatibility)
 - **Chinese body text with English source links**
+- **Deduplicate across sections** — if an article already appears in one topic section, do not repeat it in another. Each article should appear in the single most relevant section only
 
 ### Data Source Stats Footer
 ```
