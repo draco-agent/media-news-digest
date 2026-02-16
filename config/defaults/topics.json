@@ -116,12 +116,14 @@
       "id": "upcoming",
       "emoji": "🎞️",
       "label": "Upcoming Releases / 北美近期上映",
-      "description": "Movies opening this week and next in North American theaters, release date changes, trailer drops",
+      "description": "Movies opening this week and next in North American theaters, release date announcements, date changes, new trailers, scheduling moves",
       "search": {
         "queries": [
           "movies opening this week theaters",
           "new movie releases this weekend North America",
-          "upcoming movie release date 2026"
+          "upcoming movie release date 2026",
+          "movie release date announced set",
+          "film gets release date scheduled"
         ],
         "twitter_queries": [
           "opening this weekend",
@@ -133,7 +135,11 @@
           "in theaters",
           "premiere",
           "trailer",
-          "debuts"
+          "debuts",
+          "set for",
+          "dated for",
+          "scheduled",
+          "moves to"
         ],
         "exclude": [
           "streaming release",
