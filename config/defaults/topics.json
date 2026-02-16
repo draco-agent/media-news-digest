@@ -4,6 +4,44 @@
   "_version": "1.0.0",
   "topics": [
     {
+      "id": "production",
+      "emoji": "🎬",
+      "label": "Production / 制作动态",
+      "description": "New projects greenlit, casting announcements, filming starts/wraps, director/writer attachments",
+      "search": {
+        "queries": [
+          "new movie project announced",
+          "casting news Hollywood",
+          "film production start"
+        ],
+        "must_include": ["cast", "direct", "greenlit", "production", "star in", "attached to"],
+        "exclude": ["fan cast", "rumor"]
+      },
+      "display": {
+        "max_items": 8,
+        "style": "detailed"
+      }
+    },
+    {
+      "id": "deals",
+      "emoji": "💰",
+      "label": "Deals & Business / 行业交易",
+      "description": "M&A, rights acquisitions, talent deals, studio restructuring, layoffs, financial results",
+      "search": {
+        "queries": [
+          "Hollywood studio deal acquisition",
+          "entertainment industry merger",
+          "film rights deal"
+        ],
+        "must_include": ["deal", "acquire", "merger", "rights", "contract", "layoff", "restructur"],
+        "exclude": ["stock tips", "investment advice"]
+      },
+      "display": {
+        "max_items": 5,
+        "style": "detailed"
+      }
+    },
+    {
       "id": "box-office",
       "emoji": "🎟️",
       "label": "Box Office / 票房",
@@ -43,25 +81,6 @@
       }
     },
     {
-      "id": "production",
-      "emoji": "🎬",
-      "label": "Production / 制作动态",
-      "description": "New projects greenlit, casting announcements, filming starts/wraps, director/writer attachments",
-      "search": {
-        "queries": [
-          "new movie project announced",
-          "casting news Hollywood",
-          "film production start"
-        ],
-        "must_include": ["cast", "direct", "greenlit", "production", "star in", "attached to"],
-        "exclude": ["fan cast", "rumor"]
-      },
-      "display": {
-        "max_items": 8,
-        "style": "detailed"
-      }
-    },
-    {
       "id": "awards",
       "emoji": "🏆",
       "label": "Awards / 颁奖季",
@@ -77,25 +96,6 @@
       },
       "display": {
         "max_items": 6,
-        "style": "detailed"
-      }
-    },
-    {
-      "id": "deals",
-      "emoji": "💰",
-      "label": "Deals & Business / 行业交易",
-      "description": "M&A, rights acquisitions, talent deals, studio restructuring, layoffs, financial results",
-      "search": {
-        "queries": [
-          "Hollywood studio deal acquisition",
-          "entertainment industry merger",
-          "film rights deal"
-        ],
-        "must_include": ["deal", "acquire", "merger", "rights", "contract", "layoff", "restructur"],
-        "exclude": ["stock tips", "investment advice"]
-      },
-      "display": {
-        "max_items": 5,
         "style": "detailed"
       }
     },
