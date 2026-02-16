@@ -19,8 +19,22 @@
           "China box office",
           "Chinese film"
         ],
-        "must_include": ["China", "Chinese", "Beijing", "Shanghai", "Tencent", "iQiyi", "Douban", "Maoyan", "co-production", "中国"],
-        "exclude": ["recipe", "travel guide"]
+        "must_include": [
+          "China",
+          "Chinese",
+          "Beijing",
+          "Shanghai",
+          "Tencent",
+          "iQiyi",
+          "Douban",
+          "Maoyan",
+          "co-production",
+          "中国"
+        ],
+        "exclude": [
+          "recipe",
+          "travel guide"
+        ]
       },
       "display": {
         "max_items": 5,
@@ -45,8 +59,23 @@
           "greenlit film project",
           "starts filming"
         ],
-        "must_include": ["cast", "direct", "greenlit", "production", "star in", "attached to", "filming", "sequel", "reboot", "adapt"],
-        "exclude": ["fan cast", "rumor", "wishlist"]
+        "must_include": [
+          "cast",
+          "direct",
+          "greenlit",
+          "production",
+          "star in",
+          "attached to",
+          "filming",
+          "sequel",
+          "reboot",
+          "adapt"
+        ],
+        "exclude": [
+          "fan cast",
+          "rumor",
+          "wishlist"
+        ]
       },
       "display": {
         "max_items": 8,
@@ -64,88 +93,22 @@
           "entertainment industry merger",
           "film rights deal"
         ],
-        "must_include": ["deal", "acquire", "merger", "rights", "contract", "layoff", "restructur"],
-        "exclude": ["stock tips", "investment advice"]
+        "must_include": [
+          "deal",
+          "acquire",
+          "merger",
+          "rights",
+          "contract",
+          "layoff",
+          "restructur"
+        ],
+        "exclude": [
+          "stock tips",
+          "investment advice"
+        ]
       },
       "display": {
         "max_items": 5,
-        "style": "detailed"
-      }
-    },
-    {
-      "id": "box-office",
-      "emoji": "🎟️",
-      "label": "Box Office / 票房",
-      "description": "North American and global box office results, opening weekend estimates, milestones",
-      "search": {
-        "queries": [
-          "box office results this week",
-          "weekend box office numbers",
-          "movie opening weekend gross"
-        ],
-        "must_include": ["box office", "gross", "opening weekend", "domestic", "worldwide gross"],
-        "exclude": ["tutorial", "how to invest"]
-      },
-      "display": {
-        "max_items": 6,
-        "style": "detailed"
-      }
-    },
-    {
-      "id": "streaming",
-      "emoji": "📺",
-      "label": "Streaming / 流媒体",
-      "description": "Netflix, Disney+, Apple TV+, Amazon Prime Video, HBO Max, Peacock platform news, viewership data, content strategy",
-      "search": {
-        "queries": [
-          "Netflix new movies series",
-          "Disney Plus streaming news",
-          "Apple TV+ original content",
-          "streaming wars latest"
-        ],
-        "must_include": ["Netflix", "Disney+", "Apple TV+", "HBO", "streaming", "Peacock", "Prime Video"],
-        "exclude": ["how to subscribe", "price comparison"]
-      },
-      "display": {
-        "max_items": 6,
-        "style": "detailed"
-      }
-    },
-    {
-      "id": "awards",
-      "emoji": "🏆",
-      "label": "Awards / 颁奖季",
-      "description": "Oscars, Golden Globes, Emmys, BAFTAs, SAG, Cannes Palme d'Or, Venice Golden Lion, predictions and campaigns",
-      "search": {
-        "queries": [
-          "Oscar nominations predictions",
-          "awards season latest",
-          "Golden Globe Emmy winners"
-        ],
-        "must_include": ["Oscar", "Academy Award", "Golden Globe", "Emmy", "BAFTA", "SAG", "nomination", "award"],
-        "exclude": ["fan vote", "popularity award"]
-      },
-      "display": {
-        "max_items": 6,
-        "style": "detailed"
-      }
-    },
-    {
-      "id": "festivals",
-      "emoji": "🎪",
-      "label": "Film Festivals / 电影节",
-      "description": "Cannes, Venice, Toronto (TIFF), Berlin, Sundance, Telluride, SXSW — lineups, premieres, acquisitions",
-      "search": {
-        "queries": [
-          "Cannes film festival lineup",
-          "Venice TIFF Sundance film premiere",
-          "film festival acquisition"
-        ],
-        "must_include": ["Cannes", "Venice", "TIFF", "Toronto", "Sundance", "Berlin", "Telluride", "festival"],
-        "exclude": ["music festival", "food festival"]
-      },
-      "display": {
-        "max_items": 6,
         "style": "detailed"
       }
     },
@@ -164,11 +127,143 @@
           "opening this weekend",
           "in theaters now"
         ],
-        "must_include": ["opening", "release date", "in theaters", "premiere", "trailer", "debuts"],
-        "exclude": ["streaming release", "DVD", "Blu-ray"]
+        "must_include": [
+          "opening",
+          "release date",
+          "in theaters",
+          "premiere",
+          "trailer",
+          "debuts"
+        ],
+        "exclude": [
+          "streaming release",
+          "DVD",
+          "Blu-ray"
+        ]
       },
       "display": {
         "max_items": 5,
+        "style": "detailed"
+      }
+    },
+    {
+      "id": "box-office",
+      "emoji": "🎟️",
+      "label": "Box Office / 票房",
+      "description": "North American and global box office results, opening weekend estimates, milestones",
+      "search": {
+        "queries": [
+          "box office results this week",
+          "weekend box office numbers",
+          "movie opening weekend gross"
+        ],
+        "must_include": [
+          "box office",
+          "gross",
+          "opening weekend",
+          "domestic",
+          "worldwide gross"
+        ],
+        "exclude": [
+          "tutorial",
+          "how to invest"
+        ]
+      },
+      "display": {
+        "max_items": 6,
+        "style": "detailed"
+      }
+    },
+    {
+      "id": "streaming",
+      "emoji": "📺",
+      "label": "Streaming / 流媒体",
+      "description": "Netflix, Disney+, Apple TV+, Amazon Prime Video, HBO Max, Peacock platform news, viewership data, content strategy",
+      "search": {
+        "queries": [
+          "Netflix new movies series",
+          "Disney Plus streaming news",
+          "Apple TV+ original content",
+          "streaming wars latest"
+        ],
+        "must_include": [
+          "Netflix",
+          "Disney+",
+          "Apple TV+",
+          "HBO",
+          "streaming",
+          "Peacock",
+          "Prime Video"
+        ],
+        "exclude": [
+          "how to subscribe",
+          "price comparison"
+        ]
+      },
+      "display": {
+        "max_items": 6,
+        "style": "detailed"
+      }
+    },
+    {
+      "id": "awards",
+      "emoji": "🏆",
+      "label": "Awards / 颁奖季",
+      "description": "Oscars, Golden Globes, Emmys, BAFTAs, SAG, Cannes Palme d'Or, Venice Golden Lion, predictions and campaigns",
+      "search": {
+        "queries": [
+          "Oscar nominations predictions",
+          "awards season latest",
+          "Golden Globe Emmy winners"
+        ],
+        "must_include": [
+          "Oscar",
+          "Academy Award",
+          "Golden Globe",
+          "Emmy",
+          "BAFTA",
+          "SAG",
+          "nomination",
+          "award"
+        ],
+        "exclude": [
+          "fan vote",
+          "popularity award"
+        ]
+      },
+      "display": {
+        "max_items": 6,
+        "style": "detailed"
+      }
+    },
+    {
+      "id": "festivals",
+      "emoji": "🎪",
+      "label": "Film Festivals / 电影节",
+      "description": "Cannes, Venice, Toronto (TIFF), Berlin, Sundance, Telluride, SXSW — lineups, premieres, acquisitions",
+      "search": {
+        "queries": [
+          "Cannes film festival lineup",
+          "Venice TIFF Sundance film premiere",
+          "film festival acquisition"
+        ],
+        "must_include": [
+          "Cannes",
+          "Venice",
+          "TIFF",
+          "Toronto",
+          "Sundance",
+          "Berlin",
+          "Telluride",
+          "festival"
+        ],
+        "exclude": [
+          "music festival",
+          "food festival"
+        ]
+      },
+      "display": {
+        "max_items": 6,
         "style": "detailed"
       }
     },
@@ -183,8 +278,18 @@
           "film critic review roundup",
           "movie early buzz reactions"
         ],
-        "must_include": ["review", "Rotten Tomatoes", "Metacritic", "critic", "rating", "score"],
-        "exclude": ["user review", "sponsored"]
+        "must_include": [
+          "review",
+          "Rotten Tomatoes",
+          "Metacritic",
+          "critic",
+          "rating",
+          "score"
+        ],
+        "exclude": [
+          "user review",
+          "sponsored"
+        ]
       },
       "display": {
         "max_items": 5,

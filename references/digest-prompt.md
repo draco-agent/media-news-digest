@@ -126,11 +126,11 @@ Output sections in this **exact order** (do NOT rearrange):
 1. 🇨🇳 China / 中国影视
 2. 🎬 Production / 制作动态
 3. 💰 Deals & Business / 行业交易
-4. 🎟️ Box Office / 票房
-5. 📺 Streaming / 流媒体
-6. 🏆 Awards / 颁奖季
-7. 🎪 Film Festivals / 电影节
-8. 🎞️ Upcoming Releases / 北美近期上映
+4. 🎞️ Upcoming Releases / 北美近期上映
+5. 🎟️ Box Office / 票房
+6. 📺 Streaming / 流媒体
+7. 🏆 Awards / 颁奖季
+8. 🎪 Film Festivals / 电影节
 9. ⭐ Reviews & Buzz / 影评口碑
 
 Each topic has:
