@@ -523,13 +523,25 @@ Examples:
                     "priority": source.get("priority", False),
                 }
                 article["quality_score"] = calculate_base_score(article, reddit_source)
-                # Reddit score bonus
+                # Reddit score bonus (upvotes)
                 score = article.get("score", 0)
-                if score > 500:
+                if score > 1000:
+                    article["quality_score"] += 6
+                elif score > 500:
                     article["quality_score"] += 5
                 elif score > 200:
+                    article["quality_score"] += 4
+                elif score > 50:
                     article["quality_score"] += 3
-                elif score > 100:
+                elif score > 20:
+                    article["quality_score"] += 2
+                # Reddit comment bonus (high discussion = newsworthy)
+                num_comments = article.get("num_comments", 0)
+                if num_comments > 200:
+                    article["quality_score"] += 3
+                elif num_comments > 50:
+                    article["quality_score"] += 2
+                elif num_comments > 20:
                     article["quality_score"] += 1
                 all_articles.append(article)
         

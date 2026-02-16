@@ -472,7 +472,7 @@
       "name": "r/television",
       "subreddit": "television",
       "enabled": true,
-      "priority": false,
+      "priority": true,
       "topics": [
         "streaming",
         "production",
@@ -486,7 +486,7 @@
       "name": "r/Oscars",
       "subreddit": "Oscars",
       "enabled": true,
-      "priority": false,
+      "priority": true,
       "topics": [
         "awards"
       ],
