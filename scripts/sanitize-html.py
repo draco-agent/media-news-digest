@@ -168,7 +168,7 @@ def _process_inline(text: str) -> str:
             try:
                 domain = urlparse(url).netloc
                 return f'<a href="{escaped_url}" style="color:#0969da;font-size:13px">{escape(domain)}</a>'
-            except:
+            except Exception:
                 return f'<a href="{escaped_url}" style="color:#0969da;font-size:13px">{escaped_url}</a>'
         return escape(url)
     

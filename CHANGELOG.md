@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1] - 2026-02-17
+
+### Improved
+- KOL entries now show display name with handle: **Display Name** (@handle)
+- Code quality: bare `except:` → `except Exception:` across all scripts
+- Removed unused imports (URLError, tempfile, List, timezone)
+- Added `display_name` field to merged Twitter articles
+
 ## [1.6.0] - 2026-02-17
 
 ### Added

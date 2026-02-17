@@ -89,7 +89,7 @@ def get_domain(url: str) -> str:
     """Extract domain from URL."""
     try:
         return urlparse(url).netloc.lower().replace('www.', '')
-    except:
+    except Exception:
         return ''
 
 
@@ -107,7 +107,7 @@ def calculate_base_score(article: Dict[str, Any], source: Dict[str, Any]) -> flo
         hours_old = (datetime.now(timezone.utc) - article_date).total_seconds() / 3600
         if hours_old < 24:
             score += SCORE_RECENT
-    except:
+    except Exception:
         pass
     
     # Twitter engagement bonus
@@ -485,6 +485,7 @@ Examples:
             for article in source.get("articles", []):
                 article["source_type"] = "twitter"
                 article["source_name"] = f"@{source.get('handle', '')}"
+                article["display_name"] = source.get("name", "")
                 article["source_id"] = source.get("source_id", "")
                 article["quality_score"] = calculate_base_score(article, source)
                 all_articles.append(article)

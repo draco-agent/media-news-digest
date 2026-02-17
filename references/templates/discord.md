@@ -23,7 +23,7 @@ Discord-optimized format with bullet points and link suppression.
 ## 📢 KOL Updates
 
 {{#kol_tweets}}
-• **@{{handle}}** — {{summary}} `👁 {{views}} | 💬 {{replies}} | 🔁 {{retweets}} | ❤️ {{likes}}`
+• **{{display_name}}** (@{{handle}}) — {{summary}} `👁 {{views}} | 💬 {{replies}} | 🔁 {{retweets}} | ❤️ {{likes}}`
   <{{tweet_link}}>
 {{/kol_tweets}}
 

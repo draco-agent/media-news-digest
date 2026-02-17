@@ -25,7 +25,6 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
-from urllib.error import URLError, HTTPError
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Tuple
 
