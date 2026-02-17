@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Tech Digest Configuration Schema",
-  "version": "2.5.0",
+  "title": "Media News Digest Configuration Schema",
+  "version": "1.6.2",
   "definitions": {
     "source": {
       "type": "object",
@@ -13,7 +13,7 @@
         },
         "type": {
           "type": "string",
-          "enum": ["rss", "twitter", "web", "github"],
+          "enum": ["rss", "twitter", "web", "reddit"],
           "description": "Source type"
         },
         "name": {
@@ -25,7 +25,7 @@
           "description": "Whether this source is active"
         },
         "priority": {
-          "type": "boolean", 
+          "type": "boolean",
           "description": "High-priority sources are fetched first and scored higher"
         },
         "topics": {
@@ -48,10 +48,25 @@
           "type": "string",
           "description": "Twitter handle without @ (required for type=twitter)"
         },
-        "repo": {
+        "subreddit": {
           "type": "string",
-          "pattern": "^[a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+$",
-          "description": "GitHub repository in owner/repo format (required for type=github)"
+          "description": "Subreddit name without r/ (required for type=reddit)"
+        },
+        "sort": {
+          "type": "string",
+          "enum": ["hot", "new", "top", "rising"],
+          "description": "Reddit sort order (default: hot)"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Max posts to fetch from subreddit (default: 25)"
+        },
+        "min_score": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum Reddit post score to include (default: 0)"
         }
       },
       "allOf": [
@@ -73,10 +88,10 @@
         },
         {
           "if": {
-            "properties": { "type": { "const": "github" } }
+            "properties": { "type": { "const": "reddit" } }
           },
           "then": {
-            "required": ["repo"]
+            "required": ["subreddit"]
           }
         }
       ]
