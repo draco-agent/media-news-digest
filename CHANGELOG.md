@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.6.0] - 2026-02-17
+
+### Added
+- `run-pipeline.py`: Unified parallel pipeline — runs all 4 fetch steps concurrently, then merges (synced from tech-news-digest v3.4.0)
+- Brave API auto rate-limit detection for optimal concurrency in `fetch-web.py`
+
+### Fixed
+- Reddit 403 errors: added SSL context and proper Accept/Accept-Language headers
+- Reddit fetching now parallel (ThreadPoolExecutor) instead of sequential
+- All fetch timeouts increased from 15s to 30s for reliability
+
 ## [1.3.0] - 2026-02-16
 
 ### Added
