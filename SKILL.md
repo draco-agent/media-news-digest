@@ -1,7 +1,20 @@
 ---
 name: media-news-digest
-description: Generate media & entertainment industry news digests. Covers Hollywood trades (THR, Deadline, Variety), box office, streaming, awards season, film festivals, and production news. RSS + Twitter/X + web search pipeline with quality scoring, deduplication, and multi-format output.
-version: "1.6.1"
+description: Generate media & entertainment industry news digests. Covers Hollywood trades (THR, Deadline, Variety), box office, streaming, awards season, film festivals, and production news. Four-layer data collection from RSS feeds, Twitter/X KOLs, Reddit, and web search. Pipeline-based scripts with retry mechanisms and deduplication. Supports Discord, email, and markdown templates.
+version: "1.6.2"
+homepage: https://github.com/draco-agent/media-news-digest
+source: https://github.com/draco-agent/media-news-digest
+metadata:
+  openclaw:
+    requires:
+      bins: ["python3"]
+    optionalBins: ["gog"]
+    credentialAccess: >
+      This skill does NOT read, store, or manage any platform credentials itself.
+      Email delivery uses the external `gog` CLI (Google Workspace CLI) which manages
+      its own OAuth tokens separately. Twitter and Brave API keys are passed via
+      environment variables and used only for outbound API calls within fetch scripts.
+      No credentials are written to disk by this skill.
 env:
   - name: X_BEARER_TOKEN
     required: false
@@ -17,17 +30,17 @@ Automated media & entertainment industry news digest system. Covers Hollywood tr
 
 ## Quick Start
 
-1. **Generate Digest**:
+1. **Generate Digest** (unified pipeline — runs all 4 layers in parallel):
    ```bash
-   python3 scripts/fetch-rss.py --config workspace/config
-   python3 scripts/fetch-twitter.py --config workspace/config
-   python3 scripts/fetch-web.py --config workspace/config
-   python3 scripts/merge-sources.py --rss rss.json --twitter twitter.json --web web.json
+   python3 scripts/run-pipeline.py \
+     --defaults <SKILL_DIR>/config/defaults \
+     --hours 48 --freshness pd \
+     --output /tmp/md-merged.json --verbose --force
    ```
 
 2. **Use Templates**: Apply Discord or email templates to merged output
 
-## Data Sources (28 total)
+## Data Sources (44 total, 35 enabled)
 
 - **RSS Feeds (15)**: THR, Deadline, Variety, Screen Daily, IndieWire, The Wrap, Collider, Vulture, Awards Daily, Gold Derby, Screen Rant, Empire, The Playlist, Entertainment Weekly, /Film
 - **Twitter/X KOLs (13)**: @THR, @DEADLINE, @Variety, @FilmUpdates, @DiscussingFilm, @ScottFeinberg, @kristapley, @BoxOfficeMojo, @GiteshPandya, @MattBelloni, @Borys_Kit, and more
