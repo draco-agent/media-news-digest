@@ -68,7 +68,7 @@
         "deals",
         "production"
       ],
-      "note": "International film market & distribution \u2014 RSS 404, disabled"
+      "note": "International film market & distribution — RSS 404, disabled"
     },
     {
       "id": "indiewire-rss",
@@ -286,7 +286,7 @@
       "type": "twitter",
       "name": "The Hollywood Reporter",
       "handle": "THR",
-      "enabled": true,
+      "enabled": false,
       "priority": true,
       "topics": [
         "production",
@@ -301,7 +301,7 @@
       "type": "twitter",
       "name": "Deadline",
       "handle": "DEADLINE",
-      "enabled": true,
+      "enabled": false,
       "priority": true,
       "topics": [
         "production",
@@ -315,7 +315,7 @@
       "type": "twitter",
       "name": "Variety",
       "handle": "Variety",
-      "enabled": true,
+      "enabled": false,
       "priority": true,
       "topics": [
         "production",
@@ -343,7 +343,7 @@
       "type": "twitter",
       "name": "Film Updates",
       "handle": "FilmUpdates",
-      "enabled": true,
+      "enabled": false,
       "priority": false,
       "topics": [
         "production",
@@ -369,7 +369,7 @@
       "type": "twitter",
       "name": "Kristopher Tapley",
       "handle": "kristapley",
-      "enabled": true,
+      "enabled": false,
       "priority": false,
       "topics": [
         "awards"
@@ -381,7 +381,7 @@
       "type": "twitter",
       "name": "DiscussingFilm",
       "handle": "DiscussingFilm",
-      "enabled": true,
+      "enabled": false,
       "priority": false,
       "topics": [
         "production",
@@ -397,7 +397,7 @@
       "type": "twitter",
       "name": "Box Office Mojo",
       "handle": "BoxOfficeMojo",
-      "enabled": true,
+      "enabled": false,
       "priority": true,
       "topics": [
         "box-office",
@@ -410,7 +410,7 @@
       "type": "twitter",
       "name": "Gitesh Pandya",
       "handle": "GiteshPandya",
-      "enabled": true,
+      "enabled": false,
       "priority": false,
       "topics": [
         "box-office"
@@ -422,7 +422,7 @@
       "type": "twitter",
       "name": "Matt Belloni",
       "handle": "MattBelloni",
-      "enabled": true,
+      "enabled": false,
       "priority": false,
       "topics": [
         "deals",
@@ -435,7 +435,7 @@
       "type": "twitter",
       "name": "Borys Kit",
       "handle": "Borys_Kit",
-      "enabled": true,
+      "enabled": false,
       "priority": false,
       "topics": [
         "production",
@@ -613,7 +613,7 @@
       "name": "Rotten Tomatoes Editorial",
       "url": "https://editorial.rottentomatoes.com/feed/",
       "priority": false,
-      "note": "Reviews, scores, critic consensus \u2014 strengthens Reviews section",
+      "note": "Reviews, scores, critic consensus — strengthens Reviews section",
       "topics": [
         "reviews",
         "box-office"
@@ -628,7 +628,8 @@
       "note": "Box office tracking and projections, replaces ScottFeinberg",
       "topics": [
         "box-office"
-      ]
+      ],
+      "enabled": false
     }
   ]
 }
