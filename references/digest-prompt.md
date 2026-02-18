@@ -40,7 +40,7 @@ Merge logic: user sources append to defaults (same `id` → user wins); user top
 
 ## Context: Previous Report
 
-Read the most recent archive file from `<WORKSPACE>/archive/media-digest/` (if any). Use it to:
+Read the most recent archive file from `<WORKSPACE>/archive/media-news-digest/` (if any). Use it to:
 - **Avoid repeating** news already covered
 - **Follow up** on developing stories with new information only
 - If no previous report exists, skip this step.
@@ -100,14 +100,20 @@ python3 <SKILL_DIR>/scripts/merge-sources.py \
   --twitter /tmp/md-twitter.json \
   --web /tmp/md-web.json \
   --reddit /tmp/md-reddit.json \
-  --archive-dir <WORKSPACE>/archive/media-digest/ \
+  --archive-dir <WORKSPACE>/archive/media-news-digest/ \
   --output /tmp/md-merged.json \
   --verbose
 ```
 
 ## Report Generation
 
-Use the merged output (`/tmp/md-merged.json`) and the appropriate template from `<SKILL_DIR>/references/templates/<TEMPLATE>.md` to generate the report.
+First, get a structured overview of the merged data:
+```bash
+python3 <SKILL_DIR>/scripts/summarize-merged.py --input /tmp/md-merged.json --top <ITEMS_PER_SECTION>
+```
+This prints a human-readable summary with top articles per topic, sorted by quality score, including metrics and sources. Use this output to select articles for the report — **do NOT write ad-hoc Python to parse the merged JSON**.
+
+Then use the appropriate template from `<SKILL_DIR>/references/templates/<TEMPLATE>.md` to generate the report.
 
 ### Language & Citation Rules
 - **Write body text in <LANGUAGE>** (Chinese by default)
@@ -164,7 +170,7 @@ Each topic has:
 ```
 
 ## Archive
-Save the report to `<WORKSPACE>/archive/media-digest/<MODE>-YYYY-MM-DD.md`
+Save the report to `<WORKSPACE>/archive/media-news-digest/<MODE>-YYYY-MM-DD.md`
 
 After saving, delete archive files older than 90 days.
 

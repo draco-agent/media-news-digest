@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.0] - 2026-02-18
+
+### Added
+- `summarize-merged.py`: structured summary tool for LLM consumption, avoids ad-hoc JSON parsing
+- digest-prompt now references summarize-merged.py for article selection
+
+### Fixed
+- test-pipeline.sh: zsh-compatible array syntax for merge args
+- Archive path: `media-digest/` → `media-news-digest/` for consistency
+
 ## [1.6.1] - 2026-02-17
 
 ### Improved
