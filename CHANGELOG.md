@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.7.1] - 2026-02-18
+
+### Security
+- Sanitize untrusted titles/snippets in summarize-merged.py (prompt injection filter)
+- Add untrusted content warning banner per topic section
+
 ## [1.7.0] - 2026-02-18
 
 ### Added
