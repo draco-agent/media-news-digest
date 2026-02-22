@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.8.1 - 2026-02-22
+
+### Changed
+- Cron job: add second email recipient support
+
 ## v1.8.0 - 2026-02-21
 
 ### Changed
