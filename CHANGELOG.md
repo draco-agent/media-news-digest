@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.9.4 - 2026-02-24
+
+### Fixed
+- **Root cause fix**: Remove `china` topic tag from general RSS sources (THR, Deadline, Variety, etc.) — was causing every article from these feeds to be classified as China news
+- China topic now only assigned by dedicated sources: THR China, Variety Asia, Deadline China tag feeds
+
 ## v1.9.3 - 2026-02-24
 
 ### Fixed

@@ -16,8 +16,7 @@
                 "deals",
                 "box-office",
                 "streaming",
-                "upcoming",
-                "china"
+                "upcoming"
             ],
             "note": "Premier Hollywood trade publication"
         },
@@ -33,8 +32,7 @@
                 "deals",
                 "box-office",
                 "streaming",
-                "upcoming",
-                "china"
+                "upcoming"
             ],
             "note": "Fastest breaking news in Hollywood"
         },
@@ -51,8 +49,7 @@
                 "deals",
                 "box-office",
                 "streaming",
-                "upcoming",
-                "china"
+                "upcoming"
             ],
             "note": "Deep reporting + box office data"
         },
@@ -387,8 +384,7 @@
                 "production",
                 "box-office",
                 "streaming",
-                "upcoming",
-                "china"
+                "upcoming"
             ],
             "note": "Major film news account"
         },
@@ -400,8 +396,7 @@
             "enabled": true,
             "priority": true,
             "topics": [
-                "box-office",
-                "china"
+                "box-office"
             ],
             "note": "Official box office data"
         },
@@ -482,8 +477,7 @@
             "enabled": true,
             "priority": true,
             "topics": [
-                "box-office",
-                "china"
+                "box-office"
             ],
             "note": "Dedicated box office tracking and analysis",
             "sort": "hot",
