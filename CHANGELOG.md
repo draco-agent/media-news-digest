@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.8.4 - 2026-02-24
+
+### Changed
+- Enable all 14 Twitter/X sources (were all disabled)
+
 ## v1.8.3 - 2026-02-24
 
 ### Changed
