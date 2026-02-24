@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.9.2 - 2026-02-24
+
+### Fixed
+- China topic: tighten must_include keywords to avoid false positives (Korea/Japan/secondary market mentions)
+- China topic: add exclusions for other Asian markets
+- Digest prompt: add same-story-different-dates dedup rule
+- Digest prompt: add explicit China section filtering rules
+
 ## v1.9.1 - 2026-02-24
 
 ### Added
