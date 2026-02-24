@@ -1,7 +1,7 @@
 {
     "_description": "Media & entertainment industry news sources. Hollywood trades, streaming, box office, awards coverage.",
-    "_updated": "2026-02-16",
-    "_version": "1.5.1",
+    "_updated": "2026-02-24",
+    "_version": "1.9.1",
     "sources": [
         {
             "id": "thr-rss",
@@ -121,7 +121,7 @@
             "type": "rss",
             "name": "Vulture",
             "url": "https://www.vulture.com/feed/rss/index.xml",
-            "enabled": false,
+            "enabled": true,
             "priority": false,
             "topics": [
                 "reviews",
@@ -201,7 +201,7 @@
             "type": "rss",
             "name": "Entertainment Weekly",
             "url": "https://ew.com/feed/",
-            "enabled": false,
+            "enabled": true,
             "priority": false,
             "topics": [
                 "production",
@@ -630,6 +630,297 @@
                 "box-office"
             ],
             "enabled": true
+        },
+        {
+            "id": "etonline-rss",
+            "type": "rss",
+            "name": "Entertainment Tonight",
+            "url": "https://www.etonline.com/news/rss",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "awards",
+                "streaming"
+            ],
+            "note": "Americas largest entertainment news show"
+        },
+        {
+            "id": "denofgeek-rss",
+            "type": "rss",
+            "name": "Den of Geek",
+            "url": "https://www.denofgeek.com/feed/",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "reviews",
+                "streaming"
+            ],
+            "note": "Deep analysis on movies, TV, streaming"
+        },
+        {
+            "id": "thedirect-rss",
+            "type": "rss",
+            "name": "The Direct",
+            "url": "https://thedirect.com/feed",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "upcoming"
+            ],
+            "note": "Marvel/DC/franchise news"
+        },
+        {
+            "id": "cinemablend-rss",
+            "type": "rss",
+            "name": "CinemaBlend",
+            "url": "https://www.cinemablend.com/rss",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "reviews",
+                "streaming",
+                "upcoming"
+            ],
+            "note": "Comprehensive movie/TV news"
+        },
+        {
+            "id": "movieweb-rss",
+            "type": "rss",
+            "name": "MovieWeb",
+            "url": "https://movieweb.com/feed/",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "reviews",
+                "upcoming"
+            ],
+            "note": "Movie news and trailers"
+        },
+        {
+            "id": "cbr-rss",
+            "type": "rss",
+            "name": "CBR",
+            "url": "https://www.cbr.com/feed/",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "reviews",
+                "streaming"
+            ],
+            "note": "Comic book movies, animation, TV"
+        },
+        {
+            "id": "rogerebert-rss",
+            "type": "rss",
+            "name": "Roger Ebert",
+            "url": "https://www.rogerebert.com/feed",
+            "enabled": true,
+            "priority": true,
+            "topics": [
+                "reviews"
+            ],
+            "note": "Premier film criticism"
+        },
+        {
+            "id": "thefilmstage-rss",
+            "type": "rss",
+            "name": "The Film Stage",
+            "url": "https://thefilmstage.com/feed/",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "reviews",
+                "festivals",
+                "production"
+            ],
+            "note": "Independent film + reviews"
+        },
+        {
+            "id": "nofilmschool-rss",
+            "type": "rss",
+            "name": "No Film School",
+            "url": "https://nofilmschool.com/rss.xml",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production"
+            ],
+            "note": "Filmmaking technique + industry"
+        },
+        {
+            "id": "whatsonnetflix-rss",
+            "type": "rss",
+            "name": "What's on Netflix",
+            "url": "https://www.whats-on-netflix.com/feed/",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "streaming"
+            ],
+            "note": "Netflix content tracking"
+        },
+        {
+            "id": "decider-rss",
+            "type": "rss",
+            "name": "Decider",
+            "url": "https://decider.com/feed/",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "streaming",
+                "reviews"
+            ],
+            "note": "Cross-platform streaming guide"
+        },
+        {
+            "id": "animenewsnetwork-rss",
+            "type": "rss",
+            "name": "Anime News Network",
+            "url": "https://www.animenewsnetwork.com/all/rss.xml",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "reviews"
+            ],
+            "note": "Anime industry news"
+        },
+        {
+            "id": "reddit-entertainment",
+            "type": "reddit",
+            "name": "r/entertainment",
+            "subreddit": "entertainment",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "streaming",
+                "deals"
+            ],
+            "note": "General entertainment discussion",
+            "sort": "hot",
+            "limit": 25,
+            "min_score": 50
+        },
+        {
+            "id": "reddit-netflix",
+            "type": "reddit",
+            "name": "r/netflix",
+            "subreddit": "netflix",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "streaming"
+            ],
+            "note": "Netflix community",
+            "sort": "hot",
+            "limit": 25,
+            "min_score": 20
+        },
+        {
+            "id": "reddit-marvelstudios",
+            "type": "reddit",
+            "name": "r/marvelstudios",
+            "subreddit": "marvelstudios",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "upcoming",
+                "box-office"
+            ],
+            "note": "MCU fan community, 3M+ members",
+            "sort": "hot",
+            "limit": 25,
+            "min_score": 50
+        },
+        {
+            "id": "reddit-dc-cinematic",
+            "type": "reddit",
+            "name": "r/DC_Cinematic",
+            "subreddit": "DC_Cinematic",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "upcoming"
+            ],
+            "note": "DC films and TV",
+            "sort": "hot",
+            "limit": 25,
+            "min_score": 20
+        },
+        {
+            "id": "reddit-anime",
+            "type": "reddit",
+            "name": "r/anime",
+            "subreddit": "anime",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "reviews"
+            ],
+            "note": "Anime discussion, 8M+ members",
+            "sort": "hot",
+            "limit": 25,
+            "min_score": 100
+        },
+        {
+            "id": "etonline-twitter",
+            "type": "twitter",
+            "name": "Entertainment Tonight",
+            "handle": "etnow",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "awards"
+            ],
+            "note": "ET official"
+        },
+        {
+            "id": "theacademy-twitter",
+            "type": "twitter",
+            "name": "The Academy",
+            "handle": "TheAcademy",
+            "enabled": true,
+            "priority": true,
+            "topics": [
+                "awards"
+            ],
+            "note": "Official Academy/Oscars account"
+        },
+        {
+            "id": "letterboxd-twitter",
+            "type": "twitter",
+            "name": "Letterboxd",
+            "handle": "letterboxd",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "reviews"
+            ],
+            "note": "Film community platform"
+        },
+        {
+            "id": "a24-twitter",
+            "type": "twitter",
+            "name": "A24",
+            "handle": "A24",
+            "enabled": true,
+            "priority": false,
+            "topics": [
+                "production",
+                "festivals"
+            ],
+            "note": "A24 indie studio"
         }
     ]
 }

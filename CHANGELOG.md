@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.9.1 - 2026-02-24
+
+### Added
+- 12 new RSS sources: ET Online, Den of Geek, The Direct, CinemaBlend, MovieWeb, CBR, Roger Ebert, The Film Stage, No Film School, What's on Netflix, Decider, Anime News Network
+- 5 new Reddit sources: r/entertainment, r/netflix, r/marvelstudios, r/DC_Cinematic, r/anime
+- 4 new Twitter KOLs: @etnow, @TheAcademy, @letterboxd, @A24
+- Re-enabled: Vulture, Entertainment Weekly
+
+### Changed
+- Total sources: 44 → 65 (64 enabled)
+
 ## v1.9.0 - 2026-02-24
 
 ### Changed
