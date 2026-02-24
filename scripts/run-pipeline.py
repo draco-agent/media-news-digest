@@ -2,10 +2,10 @@
 """
 Unified data collection pipeline for media-news-digest.
 
-Runs all 4 fetch steps (RSS, Twitter, Reddit, Web) in parallel,
+Runs all 5 fetch steps (RSS, Twitter, GitHub, Reddit, Web) in parallel,
 then merges + deduplicates + scores into a single output JSON.
 
-Replaces the agent's sequential tool-call loop with one command,
+Replaces the agent's sequential 6-step tool-call loop with one command,
 eliminating ~60-120s of LLM round-trip overhead.
 
 Usage:
@@ -13,7 +13,7 @@ Usage:
       --defaults <SKILL_DIR>/config/defaults \
       --config <WORKSPACE>/config \
       --hours 48 --freshness pd \
-      --archive-dir <WORKSPACE>/archive/media-digest/ \
+      --archive-dir <WORKSPACE>/archive/media-news-digest/ \
       --output /tmp/md-merged.json \
       --verbose
 """
@@ -79,6 +79,7 @@ def run_step(
                 count = (
                     data.get("total_articles")
                     or data.get("total_posts")
+                    or data.get("total_releases")
                     or data.get("total_results")
                     or 0
                 )
@@ -125,17 +126,31 @@ def main() -> int:
     parser.add_argument("--archive-dir", type=Path, default=None, help="Archive dir for dedup penalty")
     parser.add_argument("--output", "-o", type=Path, default=Path("/tmp/md-merged.json"), help="Final merged output")
     parser.add_argument("--step-timeout", type=int, default=DEFAULT_TIMEOUT, help="Per-step timeout (seconds)")
+    parser.add_argument("--twitter-backend", choices=["official", "twitterapiio", "auto"], default=None, help="Twitter API backend to use")
     parser.add_argument("--verbose", "-v", action="store_true")
     parser.add_argument("--force", action="store_true", help="Force re-fetch ignoring caches")
+    parser.add_argument("--skip", type=str, default="", help="Comma-separated list of steps to skip (rss,twitter,github,reddit,web)")
+    parser.add_argument("--reuse-dir", type=Path, default=None, help="Reuse existing intermediate directory instead of creating new one")
 
     args = parser.parse_args()
     logger = setup_logging(args.verbose)
 
+    # Parse --skip into a set
+    skip_steps = set(s.strip().lower() for s in args.skip.split(',') if s.strip())
+
     # Intermediate output paths
-    tmp_rss = Path("/tmp/md-rss.json")
-    tmp_twitter = Path("/tmp/md-twitter.json")
-    tmp_reddit = Path("/tmp/md-reddit.json")
-    tmp_web = Path("/tmp/md-web.json")
+    import tempfile
+    if args.reuse_dir:
+        _run_dir = str(args.reuse_dir)
+        os.makedirs(_run_dir, exist_ok=True)
+    else:
+        _run_dir = tempfile.mkdtemp(prefix="td-pipeline-")
+    tmp_rss = Path(_run_dir) / "rss.json"
+    tmp_twitter = Path(_run_dir) / "twitter.json"
+    tmp_github = Path(_run_dir) / "github.json"
+    tmp_reddit = Path(_run_dir) / "reddit.json"
+    tmp_web = Path(_run_dir) / "web.json"
+    logger.info(f"📁 Run directory: {_run_dir}")
 
     # Common args for all fetch scripts
     common = ["--defaults", str(args.defaults)]
@@ -144,10 +159,11 @@ def main() -> int:
     common += ["--hours", str(args.hours)]
     verbose_flag = ["--verbose"] if args.verbose else []
 
-    # Define the 4 parallel fetch steps
+    # Define the 5 parallel fetch steps
     steps = [
         ("RSS", "fetch-rss.py", common + verbose_flag, tmp_rss),
-        ("Twitter", "fetch-twitter.py", common + verbose_flag, tmp_twitter),
+        ("Twitter", "fetch-twitter.py", common + verbose_flag + (["--backend", args.twitter_backend] if args.twitter_backend else []), tmp_twitter),
+        ("GitHub", "fetch-github.py", common + verbose_flag, tmp_github),
         ("Reddit", "fetch-reddit.py", common + verbose_flag, tmp_reddit),
         ("Web", "fetch-web.py",
          ["--defaults", str(args.defaults)]
@@ -157,25 +173,38 @@ def main() -> int:
          tmp_web),
     ]
 
-    logger.info(f"🚀 Starting pipeline: {len(steps)} sources, {args.hours}h window, freshness={args.freshness}")
+    # Filter steps by --skip and --reuse-dir
+    active_steps = []
+    for name, script, step_args, out_path in steps:
+        step_key = name.lower()
+        if step_key in skip_steps:
+            logger.info(f"  ⏭️  {name}: skipped (--skip)")
+            continue
+        if args.reuse_dir and out_path.exists() and not args.force:
+            logger.info(f"  ♻️  {name}: reusing existing {out_path}")
+            continue
+        active_steps.append((name, script, step_args, out_path))
+
+    logger.info(f"🚀 Starting pipeline: {len(active_steps)}/{len(steps)} sources, {args.hours}h window, freshness={args.freshness}")
     t_start = time.time()
 
     # Phase 1: Parallel fetch
     step_results = []
-    with ThreadPoolExecutor(max_workers=4) as pool:
-        futures = {}
-        for name, script, step_args, out_path in steps:
-            f = pool.submit(run_step, name, script, step_args, out_path, args.step_timeout, args.force)
-            futures[f] = name
+    if active_steps:
+        with ThreadPoolExecutor(max_workers=len(active_steps)) as pool:
+            futures = {}
+            for name, script, step_args, out_path in active_steps:
+                f = pool.submit(run_step, name, script, step_args, out_path, args.step_timeout, args.force)
+                futures[f] = name
 
-        for future in as_completed(futures):
-            res = future.result()
-            step_results.append(res)
-            status_icon = {"ok": "✅", "error": "❌", "timeout": "⏰"}.get(res["status"], "?")
-            logger.info(f"  {status_icon} {res['name']}: {res['count']} items ({res['elapsed_s']}s)")
-            if res["status"] != "ok" and res["stderr_tail"]:
-                for line in res["stderr_tail"]:
-                    logger.debug(f"    {line}")
+            for future in as_completed(futures):
+                res = future.result()
+                step_results.append(res)
+                status_icon = {"ok": "✅", "error": "❌", "timeout": "⏰"}.get(res["status"], "?")
+                logger.info(f"  {status_icon} {res['name']}: {res['count']} items ({res['elapsed_s']}s)")
+                if res["status"] != "ok" and res["stderr_tail"]:
+                    for line in res["stderr_tail"]:
+                        logger.debug(f"    {line}")
 
     fetch_elapsed = time.time() - t_start
     logger.info(f"📡 Fetch phase done in {fetch_elapsed:.1f}s")
@@ -184,7 +213,8 @@ def main() -> int:
     logger.info("🔀 Merging & scoring...")
     merge_args = ["--verbose"] if args.verbose else []
     for flag, path in [("--rss", tmp_rss), ("--twitter", tmp_twitter),
-                       ("--reddit", tmp_reddit), ("--web", tmp_web)]:
+                       ("--github", tmp_github), ("--reddit", tmp_reddit),
+                       ("--web", tmp_web)]:
         if path.exists():
             merge_args += [flag, str(path)]
     if args.archive_dir:
@@ -219,6 +249,14 @@ def main() -> int:
     meta_path = args.output.with_suffix(".meta.json")
     with open(meta_path, "w") as f:
         json.dump(meta, f, indent=2)
+
+    if not args.reuse_dir:
+        import shutil
+        try:
+            shutil.rmtree(_run_dir)
+            logger.debug(f"Cleaned up {_run_dir}")
+        except Exception:
+            pass
 
     logger.info(f"✅ Done → {args.output}")
     return 0

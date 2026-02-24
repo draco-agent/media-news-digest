@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.9.0 - 2026-02-24
+
+### Changed
+- **Major sync** from tech-news-digest v3.9.0: all shared scripts updated
+- fetch-twitter.py: pagination, rate limiter, retry, dedup (v3.8.0+v3.9.0)
+- merge-sources.py: URL dedup, improved scoring
+- run-pipeline.py: --skip/--reuse-dir, parallel execution improvements
+- fetch-web.py: Brave cache, rate limit handling
+- fetch-rss.py: RSS cache improvements
+- source-health.py: health tracking updates
+- summarize-merged.py: output format improvements
+- digest-prompt: switch to unified `run-pipeline.py`, add quality_score selection rule, Reddit format
+
 ## v1.8.5 - 2026-02-24
 
 ### Changed

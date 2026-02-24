@@ -21,20 +21,20 @@ import ssl
 import time
 import tempfile
 from datetime import datetime, timedelta, timezone
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from urllib.request import Request, urlopen
+
+_SSL_CTX = ssl.create_default_context()
 from urllib.error import HTTPError, URLError
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Constants
 MAX_WORKERS = 4
 TIMEOUT = 30
-
-_SSL_CTX = ssl.create_default_context()
 RETRY_COUNT = 2
 RETRY_DELAY = 3
-USER_AGENT = "MediaDigest/1.4 (bot; +https://github.com/draco-agent/media-news-digest)"
+USER_AGENT = "MediaDigest/1.8 (bot; +https://github.com/draco-agent/media-news-digest)"
 RESUME_MAX_AGE_SECONDS = 3600  # 1 hour
 
 
@@ -218,7 +218,7 @@ def main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""\
 Examples:
-    python3 fetch-reddit.py --defaults config/defaults --output /tmp/td-reddit.json --verbose
+    python3 fetch-reddit.py --defaults config/defaults --output /tmp/md-reddit.json --verbose
     python3 fetch-reddit.py --defaults config/defaults --config ~/workspace/config --hours 48
     """
     )
@@ -242,7 +242,7 @@ Examples:
     
     # Auto-generate output path if not specified
     if not args.output:
-        fd, temp_path = tempfile.mkstemp(prefix="media-digest-reddit-", suffix=".json")
+        fd, temp_path = tempfile.mkstemp(prefix="media-news-digest-reddit-", suffix=".json")
         os.close(fd)
         args.output = Path(temp_path)
     

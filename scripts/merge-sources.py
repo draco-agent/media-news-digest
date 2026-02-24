@@ -27,7 +27,10 @@ from urllib.parse import urlparse
 SCORE_MULTI_SOURCE = 5      # Article appears in multiple sources
 SCORE_PRIORITY_SOURCE = 3   # From high-priority source
 SCORE_RECENT = 2            # Recent article (< 24h)
-SCORE_ENGAGEMENT = 1        # High social engagement (Twitter)
+SCORE_ENGAGEMENT_VIRAL = 5   # Viral tweet (1000+ likes or 500+ RTs)
+SCORE_ENGAGEMENT_HIGH = 3    # High engagement (500+ likes or 200+ RTs)
+SCORE_ENGAGEMENT_MED = 2     # Medium engagement (100+ likes or 50+ RTs)
+SCORE_ENGAGEMENT_LOW = 1     # Some engagement (50+ likes or 20+ RTs)
 PENALTY_DUPLICATE = -10     # Duplicate/very similar title
 PENALTY_OLD_REPORT = -5     # Already in previous digest
 
@@ -93,6 +96,17 @@ def get_domain(url: str) -> str:
         return ''
 
 
+def normalize_url(url: str) -> str:
+    """Normalize URL for dedup comparison (strip query, fragment, trailing slash, www.)."""
+    try:
+        parsed = urlparse(url)
+        domain = parsed.netloc.lower().replace('www.', '')
+        path = parsed.path.rstrip('/')
+        return f"{domain}{path}"
+    except Exception:
+        return url
+
+
 def calculate_base_score(article: Dict[str, Any], source: Dict[str, Any]) -> float:
     """Calculate base quality score for an article."""
     score = 0.0
@@ -110,16 +124,25 @@ def calculate_base_score(article: Dict[str, Any], source: Dict[str, Any]) -> flo
     except Exception:
         pass
     
-    # Twitter engagement bonus
+    # Twitter engagement bonus (tiered)
     if source.get("source_type") == "twitter" and "metrics" in article:
         metrics = article["metrics"]
         likes = metrics.get("like_count", 0)
         retweets = metrics.get("retweet_count", 0)
         
-        # High engagement bonus
-        if likes > 100 or retweets > 50:
-            score += SCORE_ENGAGEMENT
-            
+        if likes >= 1000 or retweets >= 500:
+            score += SCORE_ENGAGEMENT_VIRAL
+        elif likes >= 500 or retweets >= 200:
+            score += SCORE_ENGAGEMENT_HIGH
+        elif likes >= 100 or retweets >= 50:
+            score += SCORE_ENGAGEMENT_MED
+        elif likes >= 50 or retweets >= 20:
+            score += SCORE_ENGAGEMENT_LOW
+
+    # RSS from priority sources get extra weight (official blogs, research papers)
+    if source.get("source_type") == "rss" and source.get("priority", False):
+        score += 2  # Extra priority RSS bonus
+
     return score
 
 
@@ -172,53 +195,41 @@ def _build_token_buckets(articles: List[Dict[str, Any]]) -> Dict[int, Set[int]]:
     return candidates
 
 
-def _normalize_url(url: str) -> str:
-    """Normalize a URL for dedup comparison.
-    
-    Strips trailing slashes, query params (utm_*, ref, etc.), fragments,
-    and lowercases the scheme + host.
-    """
-    if not url:
-        return ""
-    import urllib.parse
-    parsed = urllib.parse.urlparse(url.strip())
-    # Lowercase scheme + host
-    scheme = parsed.scheme.lower()
-    host = parsed.netloc.lower()
-    path = parsed.path.rstrip("/")
-    # Strip tracking query params but keep meaningful ones
-    if parsed.query:
-        params = urllib.parse.parse_qs(parsed.query)
-        # Remove common tracking params
-        tracking_prefixes = ("utm_", "ref", "source", "fbclid", "gclid", "mc_", "ncid")
-        cleaned = {k: v for k, v in params.items() 
-                   if not any(k.lower().startswith(p) for p in tracking_prefixes)}
-        query = urllib.parse.urlencode(cleaned, doseq=True) if cleaned else ""
-    else:
-        query = ""
-    result = f"{scheme}://{host}{path}"
-    if query:
-        result += f"?{query}"
-    return result
-
-
 def deduplicate_articles(articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Remove duplicate articles based on URL and title similarity.
+    """Remove duplicate articles based on title similarity.
     
     Uses token-based bucketing to avoid O(n²) SequenceMatcher comparisons.
     Only articles sharing 2+ significant title tokens are compared.
-    Also deduplicates articles with the same normalized URL.
+    Domain saturation is handled separately per-topic after grouping.
     """
     if not articles:
         return articles
         
-    deduplicated = []
-    domain_counts = {}
-    seen_urls: Set[str] = set()
-    
     # Sort by quality score (highest first) to keep best versions
     articles.sort(key=lambda x: x.get("quality_score", 0), reverse=True)
-    
+
+    # Phase 1: URL dedup (exact URL match after normalization)
+    url_seen: Dict[str, int] = {}  # normalized_url -> index in articles
+    url_duplicates: Set[int] = set()
+    for i, article in enumerate(articles):
+        url = article.get("link", "")
+        if not url:
+            continue
+        norm_url = normalize_url(url)
+        if norm_url in url_seen:
+            # Keep the one with higher quality_score (articles already sorted by score)
+            url_duplicates.add(i)
+            logging.debug(f"URL duplicate: {url} ~= {articles[url_seen[norm_url]].get('link','')}")
+        else:
+            url_seen[norm_url] = i
+
+    if url_duplicates:
+        articles = [a for i, a in enumerate(articles) if i not in url_duplicates]
+        logging.info(f"URL dedup: removed {len(url_duplicates)} duplicates")
+
+    # Phase 2: Title similarity dedup
+    deduplicated = []
+
     # Build token buckets for candidate pairs
     candidates = _build_token_buckets(articles)
     
@@ -230,38 +241,45 @@ def deduplicate_articles(articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]
             continue
         
         title = article.get("title", "")
-        url = article.get("link", "")
-        norm_url = _normalize_url(url)
-        domain = get_domain(url)
-        
-        # URL-based dedup: skip if we already have this exact URL
-        if norm_url and norm_url in seen_urls:
-            logging.debug(f"URL duplicate: '{title}' → {norm_url}")
-            continue
         
         # Mark future candidates as duplicates using SequenceMatcher (only within bucket)
         for j in candidates.get(i, set()):
             if j > i and j not in duplicate_indices:
                 other_title = articles[j].get("title", "")
+                # Quick length check — titles with >30% length difference are unlikely duplicates
+                norm_i = normalize_title(title)
+                norm_j = normalize_title(other_title)
+                if abs(len(norm_i) - len(norm_j)) > 0.3 * max(len(norm_i), len(norm_j), 1):
+                    continue
                 similarity = calculate_title_similarity(title, other_title)
                 if similarity >= TITLE_SIMILARITY_THRESHOLD:
                     logging.debug(f"Title duplicate: '{other_title}' ~= '{title}' ({similarity:.2f})")
                     duplicate_indices.add(j)
             
-        # Check domain saturation (too many articles from same domain)
-        if domain:
-            domain_count = domain_counts.get(domain, 0)
-            if domain_count >= 3:  # Max 3 articles per domain per topic
-                logging.debug(f"Domain oversaturation: {domain} ({domain_count} articles)")
-                continue
-            domain_counts[domain] = domain_count + 1
-        
-        if norm_url:
-            seen_urls.add(norm_url)
         deduplicated.append(article)
         
-    logging.info(f"Deduplication: {len(articles)} → {len(deduplicated)} articles (URL dedup: {len(seen_urls)} unique URLs)")
+    logging.info(f"Deduplication: {len(articles)} → {len(deduplicated)} articles")
     return deduplicated
+
+
+def apply_domain_limits(articles: List[Dict[str, Any]], max_per_domain: int = 3) -> List[Dict[str, Any]]:
+    """Limit articles per domain within a single topic group.
+    
+    Should be called per-topic after group_by_topics() to ensure
+    each topic gets its own domain budget.
+    """
+    domain_counts: Dict[str, int] = {}
+    result = []
+    for article in articles:
+        domain = get_domain(article.get("link", ""))
+        if domain:
+            count = domain_counts.get(domain, 0)
+            if count >= max_per_domain:
+                logging.debug(f"Domain limit ({max_per_domain}): skipping {domain} article in topic")
+                continue
+            domain_counts[domain] = count + 1
+        result.append(article)
+    return result
 
 
 def merge_article_sources(articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -450,7 +468,7 @@ Examples:
     
     # Auto-generate unique output path if not specified
     if not args.output:
-        fd, temp_path = tempfile.mkstemp(prefix="media-digest-merged-", suffix=".json")
+        fd, temp_path = tempfile.mkstemp(prefix="media-news-digest-merged-", suffix=".json")
         os.close(fd)
         args.output = Path(temp_path)
     
@@ -460,7 +478,7 @@ Examples:
         twitter_data = load_source_data(args.twitter)
         web_data = load_source_data(args.web)
         github_data = load_source_data(args.github)
-        reddit_data = load_source_data(getattr(args, 'reddit', None))
+        reddit_data = load_source_data(args.reddit)
         
         logger.info(f"Loaded sources - RSS: {rss_data.get('total_articles', 0)}, "
                    f"Twitter: {twitter_data.get('total_articles', 0)}, "
@@ -524,25 +542,13 @@ Examples:
                     "priority": source.get("priority", False),
                 }
                 article["quality_score"] = calculate_base_score(article, reddit_source)
-                # Reddit score bonus (upvotes)
+                # Reddit score bonus
                 score = article.get("score", 0)
-                if score > 1000:
-                    article["quality_score"] += 6
-                elif score > 500:
+                if score > 500:
                     article["quality_score"] += 5
                 elif score > 200:
-                    article["quality_score"] += 4
-                elif score > 50:
                     article["quality_score"] += 3
-                elif score > 20:
-                    article["quality_score"] += 2
-                # Reddit comment bonus (high discussion = newsworthy)
-                num_comments = article.get("num_comments", 0)
-                if num_comments > 200:
-                    article["quality_score"] += 3
-                elif num_comments > 50:
-                    article["quality_score"] += 2
-                elif num_comments > 20:
+                elif score > 100:
                     article["quality_score"] += 1
                 all_articles.append(article)
         
@@ -567,8 +573,17 @@ Examples:
         # Group by topics
         topic_groups = group_by_topics(all_articles)
         
-        # Generate summary stats (use deduplicated count, not topic-grouped which double-counts)
-        total_final = len(all_articles)
+        # Apply per-topic domain limits (max 3 articles per domain per topic)
+        for topic in topic_groups:
+            before = len(topic_groups[topic])
+            topic_groups[topic] = apply_domain_limits(topic_groups[topic])
+            after = len(topic_groups[topic])
+            if before != after:
+                logger.info(f"Domain limits ({topic}): {before} → {after}")
+        
+        # Recalculate total after domain limits
+        total_after_domain_limits = sum(len(articles) for articles in topic_groups.values())
+
         topic_counts = {topic: len(articles) for topic, articles in topic_groups.items()}
         
         output = {
@@ -588,7 +603,7 @@ Examples:
                 "quality_scoring": True
             },
             "output_stats": {
-                "total_articles": total_final,
+                "total_articles": total_after_domain_limits,
                 "topics_count": len(topic_groups),
                 "topic_distribution": topic_counts
             },
@@ -607,7 +622,7 @@ Examples:
         
         logger.info(f"✅ Merged and scored articles:")
         logger.info(f"   Input: {total_collected} articles")
-        logger.info(f"   Output: {total_final} articles across {len(topic_groups)} topics")
+        logger.info(f"   Output: {total_after_domain_limits} articles across {len(topic_groups)} topics")
         logger.info(f"   File: {args.output}")
         
         return 0

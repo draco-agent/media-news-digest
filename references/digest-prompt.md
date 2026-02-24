@@ -40,51 +40,17 @@ Read the most recent file from `<WORKSPACE>/archive/media-news-digest/` to avoid
 
 ## Data Collection Pipeline
 
-Run each script in sequence:
-
-### Step 1: RSS Feeds
+**Use the unified pipeline** (runs all 4 sources in parallel, ~30s):
 ```bash
-python3 <SKILL_DIR>/scripts/fetch-rss.py \
+python3 <SKILL_DIR>/scripts/run-pipeline.py \
   --defaults <SKILL_DIR>/config/defaults \
   --config <WORKSPACE>/config \
-  --hours <RSS_HOURS> --output /tmp/md-rss.json --verbose
-```
-If it fails, fall back to manually fetching priority feeds via `web_fetch`.
-
-### Step 2: Twitter/X KOL Monitoring
-```bash
-python3 <SKILL_DIR>/scripts/fetch-twitter.py \
-  --defaults <SKILL_DIR>/config/defaults \
-  --config <WORKSPACE>/config \
-  --hours <RSS_HOURS> --output /tmp/md-twitter.json --verbose
-```
-Requires `$X_BEARER_TOKEN`. If unavailable, skip.
-
-### Step 3: Web Search
-```bash
-python3 <SKILL_DIR>/scripts/fetch-web.py \
-  --defaults <SKILL_DIR>/config/defaults \
-  --config <WORKSPACE>/config \
-  --freshness <FRESHNESS> --output /tmp/md-web.json --verbose
-```
-
-### Step 4: Reddit
-```bash
-python3 <SKILL_DIR>/scripts/fetch-reddit.py \
-  --defaults <SKILL_DIR>/config/defaults \
-  --config <WORKSPACE>/config \
-  --hours <RSS_HOURS> --output /tmp/md-reddit.json --verbose
-```
-**Must execute.** If it fails, retry once.
-
-### Step 5: Merge & Score
-```bash
-python3 <SKILL_DIR>/scripts/merge-sources.py \
-  --rss /tmp/md-rss.json --twitter /tmp/md-twitter.json \
-  --web /tmp/md-web.json --reddit /tmp/md-reddit.json \
+  --hours <RSS_HOURS> --freshness <FRESHNESS> \
   --archive-dir <WORKSPACE>/archive/media-news-digest/ \
-  --output /tmp/md-merged.json --verbose
+  --output /tmp/md-merged.json --verbose --force
 ```
+
+If it fails, run individual scripts in `<SKILL_DIR>/scripts/` (see each script's `--help`), then merge with `merge-sources.py`.
 
 ## Report Generation
 
@@ -94,8 +60,10 @@ python3 <SKILL_DIR>/scripts/summarize-merged.py --input /tmp/md-merged.json --to
 ```
 Use this output to select articles — **do NOT write ad-hoc Python to parse the JSON**. Apply the template from `<SKILL_DIR>/references/templates/<TEMPLATE>.md`.
 
+Select articles **purely by quality_score regardless of source type**. For Reddit posts, append `*[Reddit r/xxx, {{score}}↑]*`.
+
 ### Executive Summary
-2-4 sentences between title and topics, highlighting top stories. Discord: `> ` blockquote. Email: gray background.
+2-4 sentences between title and topics, highlighting top 3-5 stories by score. Concise and punchy, no links. Discord: `> ` blockquote. Email: gray background.
 
 ### Topic Sections
 From `topics.json`: `emoji` + `label` headers, `<ITEMS_PER_SECTION>` items each. Output in the order defined in topics.json.
