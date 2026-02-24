@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.8.2 - 2026-02-22
+
+### Changed
+- Align HTML templates with tech-news-digest: add GitHub repo link in footer
+- Email footer: repo link as clickable `<a>` tag
+- Discord footer: add repo link with embed suppression `<>`
+- Email style guidelines: add headings/lists/footer/no-images/no-tables rules
+- Discord template: add delivery section (channel vs DM)
+
 ## v1.8.1 - 2026-02-22
 
 ### Changed
