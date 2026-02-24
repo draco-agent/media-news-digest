@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.8.5 - 2026-02-24
+
+### Changed
+- Sync fetch-twitter.py from tech-news-digest: dual backend (official X API + twitterapi.io), auto fallback, 3-worker concurrency, progress logging
+- Sync test-pipeline.sh: --only/--skip/--topics/--ids/--twitter-backend filtering, progress stats, timing
+
 ## v1.8.4 - 2026-02-24
 
 ### Changed
