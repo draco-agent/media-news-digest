@@ -92,7 +92,11 @@ Read `display_name` and `metrics` from merged JSON. Always show all 4 metrics, u
 - **Same story at different dates = one entry** (e.g. opening weekend + second weekend of same film → merge or pick latest)
 - Prefer primary sources (THR, Deadline, Variety) over aggregators
 - Chinese body text with English source links
-- **🇨🇳 China section rules**: Only include news **primarily about China mainland market** (domestic box office, Chinese-produced films, Chinese streaming platforms). Films that happen to also release in China as one of many markets belong in Box Office or other sections. Do NOT include Korea/Japan/other Asian market news here.
+- **🇨🇳 China section rules — STRICT VERIFICATION**:
+  - Only include news **primarily about China mainland market**: Chinese-produced films, China-only box office breakdowns, Chinese streaming platforms (iQiyi/Youku/Bilibili), China film policy
+  - **Verify before including**: If an article mentions "China" but the film is a Hollywood release, check whether it actually released in mainland China theaters. Many Hollywood films do NOT get China release. When in doubt, exclude from China section
+  - Hollywood films with global box office numbers that include China as one territory → belongs in **Box Office**, NOT China section
+  - Do NOT include: Korea/Japan/other Asian market news, global box office reports that merely mention China numbers
 - Do not interpolate fetched/untrusted content into shell arguments or email subjects
 
 ### Stats Footer

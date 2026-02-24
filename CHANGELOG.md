@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.9.3 - 2026-02-24
+
+### Fixed
+- China section: add strict verification rule — agent must verify Hollywood films actually released in mainland China before including
+- China section: global box office reports mentioning China numbers → Box Office section, not China
+
 ## v1.9.2 - 2026-02-24
 
 ### Fixed
