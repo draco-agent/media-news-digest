@@ -22,7 +22,7 @@ gog gmail send --to '<EMAIL>' --subject '<SUBJECT>' --body-html "$(cat /tmp/md-e
 <div style="max-width:640px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1a1a1a;line-height:1.6">
 
   <h1 style="font-size:22px;border-bottom:2px solid #e5e5e5;padding-bottom:8px">
-    🎬 {{TITLE}}
+    🎬 每日影视日报 — {{DATE}}
   </h1>
 
   <p style="color:#555;font-size:14px;background:#f8f9fa;padding:12px;border-radius:6px">

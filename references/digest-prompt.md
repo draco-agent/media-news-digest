@@ -13,7 +13,7 @@ Replace `<...>` placeholders before use. Daily defaults shown; weekly overrides 
 | `<ITEMS_PER_SECTION>` | `3-5` | `5-8` |
 | `<BLOG_PICKS_COUNT>` | `2-3` | `3-5` |
 | `<EXTRA_SECTIONS>` | *(none)* | `📊 Weekly Trend Summary` |
-| `<SUBJECT>` | `Daily Media Digest - YYYY-MM-DD` | `Weekly Media Digest - YYYY-MM-DD` |
+| `<SUBJECT>` | `Daily Media Digest - YYYY-MM-DD - 🎬 每日影视日报` | `Weekly Media Digest - YYYY-MM-DD - 🎬 每周影视周报` |
 | `<WORKSPACE>` | Your workspace path | |
 | `<SKILL_DIR>` | Installed skill directory | |
 | `<DISCORD_CHANNEL_ID>` | Target channel ID | |

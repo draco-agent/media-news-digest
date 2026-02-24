@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.8.3 - 2026-02-24
+
+### Changed
+- Title/subject: 中文标题 `🎬 每日影视日报 — YYYY-MM-DD`（对齐 tech-news-digest 风格）
+- Email h1 + Discord h1 + email subject 统一使用中文标题
+
 ## v1.8.2 - 2026-02-22
 
 ### Changed

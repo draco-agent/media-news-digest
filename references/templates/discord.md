@@ -5,7 +5,7 @@ Discord-optimized format with bullet points and link suppression.
 ## Template Structure
 
 ```markdown
-# 🎬 Media Digest - {{DATE}}
+# 🎬 每日影视日报 — {{DATE}}
 
 > {{EXECUTIVE_SUMMARY}}
 
