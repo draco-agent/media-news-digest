@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.0.0 - 2026-02-25
+
+### Added
+- `generate-pdf.py`: PDF generation with Chinese typography and emoji support (synced from tech-news-digest v3.10.0)
+- `send-email.py`: Proper MIME email with HTML body + PDF attachment (synced from tech-news-digest v3.10.1)
+- Updated `sanitize-html.py` from tech-news-digest
+
+### Changed
+- Email delivery: switch from mail/msmtp to send-email.py with PDF attachment
+- Digest prompt: auto-attach PDF to email delivery
+
 ## v1.9.4 - 2026-02-24
 
 ### Fixed

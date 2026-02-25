@@ -113,20 +113,20 @@ Save to `<WORKSPACE>/archive/media-news-digest/<MODE>-YYYY-MM-DD.md`. Delete fil
 
 1. **Discord**: Send to `<DISCORD_CHANNEL_ID>` via `message` tool
 2. **Email** *(optional, if `<EMAIL>` is set)*:
-   - Convert markdown to safe HTML via sanitizer:
+   - Generate HTML body per `<SKILL_DIR>/references/templates/email.md` → write to `/tmp/md-email.html`
+   - Generate PDF attachment:
      ```bash
-     python3 <SKILL_DIR>/scripts/sanitize-html.py --input /tmp/md-report-<DATE>.md --output /tmp/md-email.html
+     python3 <SKILL_DIR>/scripts/generate-pdf.py -i <WORKSPACE>/archive/media-news-digest/<MODE>-<DATE>.md -o /tmp/md-digest.pdf
      ```
-   - **Email must contain ALL the same items as Discord.**
-   - Send:
+   - Send email with PDF attached using the `send-email.py` script (handles MIME correctly). **Email must contain ALL the same items as Discord.**
      ```bash
-     # Option A: mail (msmtp) — preferred
-     mail -a "Content-Type: text/html; charset=UTF-8" [-a "From: <EMAIL_FROM>"] -s '<SUBJECT>' '<EMAIL>' < /tmp/md-email.html
-     # Option B: gog CLI — fallback
-     gog gmail send --to '<EMAIL>' --subject '<SUBJECT>' --body-html-file /tmp/md-email.html
+     python3 <SKILL_DIR>/scripts/send-email.py \
+       --to '<EMAIL>' \
+       --subject '<SUBJECT>' \
+       --html /tmp/md-email.html \
+       --attach /tmp/md-digest.pdf \
+       --from '<EMAIL_FROM>'
      ```
-   - Only include `-a "From: ..."` if `<EMAIL_FROM>` is set. SUBJECT must be a static string.
-   - If sanitize-html.py fails, do NOT fall back to manually building HTML from raw content.
-   - If delivery fails, log error and continue.
+   - Omit `--from` if `<EMAIL_FROM>` is not set. Omit `--attach` if PDF generation failed. SUBJECT must be a static string. If delivery fails, log error and continue.
 
 Write the report in <LANGUAGE>.
