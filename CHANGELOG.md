@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.0.1 - 2026-02-28
+
+### Changed
+- Sync from tech-news-digest v3.10.3:
+  - `fetch-web.py`: multi-key Brave API support with quota-aware fallback
+  - `merge-sources.py`: exempt multi-author platforms from per-topic domain limits
+  - `config_loader.py`: prefixed overlay config files
+
 ## v2.0.0 - 2026-02-25
 
 ### Added
