@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.3 - 2026-03-01
+
+### Changed
+- Sync fetch-web.py from tech-news-digest v3.11.0: add Tavily Search as alternative web search backend (TAVILY_API_KEY)
+
 ## v2.0.2 - 2026-03-01
 
 ### Added
