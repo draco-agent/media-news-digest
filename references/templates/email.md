@@ -32,7 +32,7 @@ gog gmail send --to '<EMAIL>' --subject '<SUBJECT>' --body-html "$(cat /tmp/md-e
   <h2 style="font-size:17px;margin-top:24px;color:#333">{{emoji}} {{label}}</h2>
   <ul style="padding-left:20px">
     <li style="margin-bottom:10px">
-      <strong>{{chinese_summary}}</strong> — {{description}}
+      <strong>🔥{{quality_score}} | {{chinese_summary}}</strong> — {{description}}
       <br><a href="{{link}}" style="color:#0969da;font-size:13px">{{link}}</a>
     </li>
   </ul>

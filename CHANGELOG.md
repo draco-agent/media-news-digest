@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.0.2 - 2026-03-01
+
+### Added
+- Show quality score (🔥) prefix on each article in digest output
+- Articles strictly ordered by quality_score descending within each topic
+
 ## v2.0.1 - 2026-02-28
 
 ### Changed

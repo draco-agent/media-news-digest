@@ -13,7 +13,7 @@ Discord-optimized format with bullet points and link suppression.
 ## {{emoji}} {{label}}
 
 {{#articles}}
-• {{chinese_summary}}
+• 🔥{{quality_score}} | {{chinese_summary}}
   <{{link}}>
   {{#multi_source}}*[{{source_count}} sources]*{{/multi_source}}
 
