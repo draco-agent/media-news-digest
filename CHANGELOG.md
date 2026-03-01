@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.1.1 - 2026-03-02
+
+### Fixed
+- SKILL.md: fix source counts (65 total), add all env vars (TWITTERAPI_IO_KEY, BRAVE_API_KEYS, TAVILY_API_KEY, TWITTER_API_BACKEND), list all 14 scripts, update optionalBins, fix credentialAccess description
+
 ## v2.1.0 - 2026-03-01
 
 ### Added
