@@ -81,6 +81,7 @@ def run_step(
                     or data.get("total_posts")
                     or data.get("total_releases")
                     or data.get("total_results")
+                    or data.get("total")
                     or 0
                 )
             except (json.JSONDecodeError, OSError):
@@ -129,6 +130,7 @@ def main() -> int:
     parser.add_argument("--twitter-backend", choices=["official", "twitterapiio", "auto"], default=None, help="Twitter API backend to use")
     parser.add_argument("--verbose", "-v", action="store_true")
     parser.add_argument("--force", action="store_true", help="Force re-fetch ignoring caches")
+    parser.add_argument("--enrich", action="store_true", help="Enable full-text enrichment for top articles")
     parser.add_argument("--skip", type=str, default="", help="Comma-separated list of steps to skip (rss,twitter,github,reddit,web)")
     parser.add_argument("--reuse-dir", type=Path, default=None, help="Reuse existing intermediate directory instead of creating new one")
 
@@ -148,6 +150,7 @@ def main() -> int:
     tmp_rss = Path(_run_dir) / "rss.json"
     tmp_twitter = Path(_run_dir) / "twitter.json"
     tmp_github = Path(_run_dir) / "github.json"
+    tmp_trending = Path(_run_dir) / "trending.json"
     tmp_reddit = Path(_run_dir) / "reddit.json"
     tmp_web = Path(_run_dir) / "web.json"
     logger.info(f"📁 Run directory: {_run_dir}")
@@ -164,6 +167,7 @@ def main() -> int:
         ("RSS", "fetch-rss.py", common + verbose_flag, tmp_rss),
         ("Twitter", "fetch-twitter.py", common + verbose_flag + (["--backend", args.twitter_backend] if args.twitter_backend else []), tmp_twitter),
         ("GitHub", "fetch-github.py", common + verbose_flag, tmp_github),
+        ("GitHub Trending", "fetch-github.py", ["--trending", "--hours", str(args.hours)] + verbose_flag, tmp_trending),
         ("Reddit", "fetch-reddit.py", common + verbose_flag, tmp_reddit),
         ("Web", "fetch-web.py",
          ["--defaults", str(args.defaults)]
@@ -213,7 +217,7 @@ def main() -> int:
     logger.info("🔀 Merging & scoring...")
     merge_args = ["--verbose"] if args.verbose else []
     for flag, path in [("--rss", tmp_rss), ("--twitter", tmp_twitter),
-                       ("--github", tmp_github), ("--reddit", tmp_reddit),
+                       ("--github", tmp_github), ("--trending", tmp_trending), ("--reddit", tmp_reddit),
                        ("--web", tmp_web)]:
         if path.exists():
             merge_args += [flag, str(path)]
@@ -222,6 +226,15 @@ def main() -> int:
     merge_args += ["--output", str(args.output)]
 
     merge_result = run_step("Merge", "merge-sources.py", merge_args, args.output, timeout=60, force=False)
+
+    # Phase 3: Enrich high-scoring articles with full text
+    if merge_result["status"] == "ok" and args.enrich and "enrich" not in skip_steps:
+        logger.info("📰 Enriching top articles with full text...")
+        enrich_args = ["--input", str(args.output), "--output", str(args.output)]
+        enrich_args += ["--verbose"] if args.verbose else []
+        enrich_result = run_step("Enrich", "enrich-articles.py", enrich_args, args.output, timeout=120, force=False)
+    else:
+        enrich_result = {"name": "Enrich", "status": "skipped", "elapsed_s": 0, "count": 0, "stderr_tail": []}
 
     total_elapsed = time.time() - t_start
 

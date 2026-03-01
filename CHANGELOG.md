@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.1.0 - 2026-03-01
+
+### Added
+- `enrich-articles.py`: full-text enrichment for top articles (synced from tech v3.13.0)
+- `run-pipeline.py`: --enrich flag for article enrichment phase
+- `merge-sources.py`: GitHub trending support (inactive for media, no GitHub source)
+
 ## v2.0.4 - 2026-03-01
 
 ### Fixed
