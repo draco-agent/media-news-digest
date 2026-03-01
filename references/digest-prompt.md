@@ -68,7 +68,9 @@ Each article line must include its quality score using 🔥 prefix. Format: `�
 2-4 sentences between title and topics, highlighting top 3-5 stories by score. Concise and punchy, no links. Discord: `> ` blockquote. Email: gray background.
 
 ### Topic Sections
-From `topics.json`: `emoji` + `label` headers, `<ITEMS_PER_SECTION>` items each, strictly ordered by quality_score descending (highest first).
+From `topics.json`: `emoji` + `label` headers, `<ITEMS_PER_SECTION>` items each.
+
+**⚠️ CRITICAL: Output articles in EXACTLY the same order as summarize-merged.py output (quality_score descending). Do NOT reorder, group by subtopic, or rearrange. The 🔥 scores must appear in strictly decreasing order within each section.**
 
 Every topic **must appear** — even with 1-2 items. If sparse, note "本日该板块较少".
 

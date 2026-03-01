@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.4 - 2026-03-01
+
+### Fixed
+- Strengthen quality_score ordering instruction in digest prompt (CRITICAL tag)
+
 ## v2.0.3 - 2026-03-01
 
 ### Changed
