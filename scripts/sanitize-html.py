@@ -47,6 +47,33 @@ def safe_link(url: str, label: str = None, style: str = "color:#0969da;font-size
     return f'<a href="{escaped_url}" style="{style}">{escaped_label}</a>'
 
 
+
+def _render_table(rows):
+    """Render markdown table rows as styled HTML table."""
+    if not rows:
+        return ''
+    h = '<table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:13px">'
+    h += '<thead><tr>'
+    for cell in rows[0]:
+        h += (f'<th style="background:#1F4E79;color:white;padding:8px 6px;'
+              f'text-align:center;border:1px solid #ddd;font-weight:bold">'
+              f'{_process_inline(cell)}</th>')
+    h += '</tr></thead><tbody>'
+    for row in rows[1:]:
+        h += '<tr>'
+        for i, cell in enumerate(row):
+            align = 'left' if i == 1 else 'center'
+            style = f'padding:6px;text-align:{align};border:1px solid #eee'
+            if len(row) > 4 and i == 4:
+                if any(x in cell for x in ['\u0001f53b', '-']) and 'NEW' not in cell:
+                    style += ';color:#CC0000;background:#FFF5F5'
+                elif any(x in cell for x in ['\u0001f53a', '+']) or 'NEW' in cell:
+                    style += ';color:#008000;background:#F0FFF0'
+            h += f'<td style="{style}">{_process_inline(cell)}</td>'
+        h += '</tr>'
+    h += '</tbody></table>'
+    return h
+
 def markdown_to_safe_html(md_content: str) -> str:
     """Convert markdown digest report to sanitized HTML email."""
     lines = md_content.strip().split('\n')
@@ -60,12 +87,18 @@ def markdown_to_safe_html(md_content: str) -> str:
     )
     
     in_list = False
+    in_table = False
+    table_rows = []
     
     for line in lines:
         stripped = line.strip()
         
         # Skip empty lines
         if not stripped:
+            if in_table:
+                html_parts.append(_render_table(table_rows))
+                in_table = False
+                table_rows = []
             if in_list:
                 html_parts.append('</ul>')
                 in_list = False
@@ -100,11 +133,46 @@ def markdown_to_safe_html(md_content: str) -> str:
             )
             continue
         
+        # H3: ### Subsection
+        if stripped.startswith('### '):
+            if in_table:
+                html_parts.append(_render_table(table_rows))
+                in_table = False
+                table_rows = []
+            if in_list:
+                html_parts.append('</ul>')
+                in_list = False
+            section = escape(stripped[4:])
+            html_parts.append(
+                f'<h3 style="font-size:15px;margin-top:20px;color:#444">{section}</h3>'
+            )
+            continue
+
         # Horizontal rule
         if stripped == '---':
             html_parts.append('<hr style="border:none;border-top:1px solid #e5e5e5;margin:24px 0">')
             continue
         
+        # Table row: | col | col |
+        if stripped.startswith('|') and '|' in stripped[1:]:
+            if in_list:
+                html_parts.append('</ul>')
+                in_list = False
+            if not in_table:
+                in_table = True
+                table_rows = []
+            if re.match(r'^\|[\s\-|:]+\|$', stripped):
+                continue
+            cells = [c.strip() for c in stripped.split('|')[1:-1]]
+            table_rows.append(cells)
+            continue
+
+        # Close table if non-table line
+        if in_table:
+            html_parts.append(_render_table(table_rows))
+            in_table = False
+            table_rows = []
+
         # Bullet items: • or -
         if stripped.startswith('• ') or stripped.startswith('- '):
             if not in_list:

@@ -336,7 +336,8 @@ Requirements:
     apt install fonts-noto-cjk  (for Chinese support)
 """
     )
-    parser.add_argument("--input", "-i", required=True, help="Input markdown file")
+    parser.add_argument("--input", "-i", required=True, help="Input markdown or HTML file")
+    parser.add_argument("--is-html", action="store_true", help="Input is pre-rendered HTML body (skip markdown conversion)")
     parser.add_argument("--output", "-o", required=True, help="Output PDF file")
     parser.add_argument("--verbose", "-v", action="store_true")
     args = parser.parse_args()
@@ -357,12 +358,16 @@ Requirements:
         logging.error(f"Input file not found: {args.input}")
         sys.exit(1)
 
-    md_content = input_path.read_text(encoding='utf-8')
-    logging.info(f"Converting {args.input} ({len(md_content)} chars)")
+    content = input_path.read_text(encoding='utf-8')
+    logging.info(f"Converting {args.input} ({len(content)} chars)")
 
-    # Convert markdown → HTML → PDF
-    body_html = markdown_to_html(md_content)
-    full_html = wrap_html(body_html)
+    if args.is_html:
+        # Input is already rendered HTML
+        full_html = wrap_html(content)
+    else:
+        # Convert markdown → HTML → PDF
+        body_html = markdown_to_html(content)
+        full_html = wrap_html(body_html)
 
     # Optionally save intermediate HTML for debugging
     if args.verbose:
