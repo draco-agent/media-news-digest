@@ -87,6 +87,35 @@ Read `display_name` and `metrics` from merged JSON. Always show all 4 metrics, u
 
 **<EXTRA_SECTIONS>**
 
+**🎟️ Box Office / 票房** *(weekly mode only — skip for daily)*
+
+Fetch North American weekend box office Top 10 from The Numbers:
+```bash
+curl -s -A "Mozilla/5.0 Chrome/120" "https://www.the-numbers.com/weekend-box-office-chart" > /tmp/md-boxoffice-raw.html
+```
+Parse the HTML to extract Top 10 movies with: rank, title (with Chinese translation), distributor, weekend gross, change %, cumulative gross, release date.
+
+Format as a **markdown table**:
+```
+| # | 影片 | 发行商 | 周末票房 | 周环比 | 累计票房 | 上映日期 |
+|---|------|--------|---------|--------|---------|---------|
+| 1 | **English Title** 中文名 🔥 | Studio | $XX,XXX,XXX | 🆕 NEW | $XX,XXX,XXX | M/DD |
+```
+- Use 🆕 NEW for first-week releases, 🔺 for increases, 🔻 for decreases
+- Add a `> 💡` blockquote summary highlighting notable performances
+
+Also add two subsections:
+- **📽️ 本周北美新上映** — list wide releases this week (title + Chinese name + date + studio + genre)
+- **🔜 下周北美即将上映** — list notable upcoming releases next week from Box Office Mojo schedule
+
+Place this section **after** 📝 Deep Reads and before Stats Footer.
+
+For PDF generation, use `--is-html` flag to preserve table rendering:
+```bash
+python3 <SKILL_DIR>/scripts/sanitize-html.py -i <archive-file>.md -o /tmp/md-email.html
+python3 <SKILL_DIR>/scripts/generate-pdf.py --is-html -i /tmp/md-email.html -o /tmp/md-digest.pdf
+```
+
 ### Rules
 - Only news from `<TIME_WINDOW>`
 - Every item must include a source link (Discord: `<link>`)
@@ -120,7 +149,8 @@ Save to `<WORKSPACE>/archive/media-news-digest/<MODE>-YYYY-MM-DD.md`. Delete fil
    - Generate HTML body per `<SKILL_DIR>/references/templates/email.md` → write to `/tmp/md-email.html`
    - Generate PDF attachment:
      ```bash
-     python3 <SKILL_DIR>/scripts/generate-pdf.py -i <WORKSPACE>/archive/media-news-digest/<MODE>-<DATE>.md -o /tmp/md-digest.pdf
+     python3 <SKILL_DIR>/scripts/sanitize-html.py -i <WORKSPACE>/archive/media-news-digest/<MODE>-<DATE>.md -o /tmp/md-email.html
+     python3 <SKILL_DIR>/scripts/generate-pdf.py --is-html -i /tmp/md-email.html -o /tmp/md-digest.pdf
      ```
    - Send email with PDF attached using the `send-email.py` script (handles MIME correctly). **Email must contain ALL the same items as Discord.**
      ```bash
