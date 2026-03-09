@@ -50,6 +50,25 @@ python3 <SKILL_DIR>/scripts/run-pipeline.py \
   --output /tmp/md-merged.json --verbose --force
 ```
 
+
+### Box Office Data (weekly mode ONLY — skip entirely for daily)
+
+**⚠️ MANDATORY for weekly mode. Do NOT skip this step. Do NOT substitute with RSS news articles.**
+
+Fetch the actual box office numbers:
+```bash
+curl -s -A "Mozilla/5.0 Chrome/120" "https://www.the-numbers.com/weekend-box-office-chart" > /tmp/md-boxoffice-raw.html
+```
+Parse the HTML output to extract the Top 10 movies' data (rank, title, distributor, weekend gross, change %, cumulative gross, weeks in release).
+
+Also fetch upcoming releases:
+```bash
+curl -s -A "Mozilla/5.0 Chrome/120" "https://www.boxofficemojo.com/calendar/" > /tmp/md-upcoming-raw.html
+```
+Extract next week's notable wide releases from this page.
+
+Save parsed results for use in the report's 🎟️ Box Office section.
+
 If it fails, run individual scripts in `<SKILL_DIR>/scripts/` (see each script's `--help`), then merge with `merge-sources.py`.
 
 ## Report Generation
@@ -89,13 +108,10 @@ Read `display_name` and `metrics` from merged JSON. Always show all 4 metrics, u
 
 **🎟️ Box Office / 票房** *(weekly mode only — skip for daily)*
 
-Fetch North American weekend box office Top 10 from The Numbers:
-```bash
-curl -s -A "Mozilla/5.0 Chrome/120" "https://www.the-numbers.com/weekend-box-office-chart" > /tmp/md-boxoffice-raw.html
-```
-Parse the HTML to extract Top 10 movies with: rank, title (with Chinese translation), distributor, weekend gross, change %, cumulative gross, release date.
+**⚠️ This section is MANDATORY for weekly mode. Use the ACTUAL data fetched in the Pipeline step above (from /tmp/md-boxoffice-raw.html). Do NOT replace this with RSS/Reddit news articles — those go in the bullet list above the table.**
 
-Format as a **markdown table**:
+Format the Top 10 as a **markdown table** (this is the ONLY section that uses a table):
+
 ```
 | # | 影片 | 发行商 | 周末票房 | 周环比 | 累计票房 | 上映日期 |
 |---|------|--------|---------|--------|---------|---------|
@@ -119,7 +135,7 @@ python3 <SKILL_DIR>/scripts/generate-pdf.py --is-html -i /tmp/md-email.html -o /
 ### Rules
 - Only news from `<TIME_WINDOW>`
 - Every item must include a source link (Discord: `<link>`)
-- Use bullet lists, no markdown tables
+- Use bullet lists, no markdown tables (EXCEPTION: 🎟️ Box Office Top 10 table in weekly mode MUST use markdown table format)
 - Deduplicate: same event → most authoritative source; previously reported → only if significant new development
 - Deduplicate across sections — each article in one section only
 - **Same story at different dates = one entry** (e.g. opening weekend + second weekend of same film → merge or pick latest)
