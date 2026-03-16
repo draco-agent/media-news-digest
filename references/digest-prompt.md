@@ -141,6 +141,7 @@ python3 <SKILL_DIR>/scripts/generate-pdf.py --is-html -i /tmp/md-email.html -o /
 - **Same story at different dates = one entry** (e.g. opening weekend + second weekend of same film → merge or pick latest)
 - Prefer primary sources (THR, Deadline, Variety) over aggregators
 - Chinese body text with English source links
+- **Chinese name accuracy**: Double-check romanized→Chinese name conversions. Common pitfalls: 章子怡(Zhang Ziyi, NOT 张子怡), 章(Zhāng vs Zhāng). When unsure, keep the English name
 - **🇨🇳 China section rules — STRICT VERIFICATION**:
   - Only include news **primarily about China mainland market**: Chinese-produced films, China-only box office breakdowns, Chinese streaming platforms (iQiyi/Youku/Bilibili), China film policy
   - **Verify before including**: If an article mentions "China" but the film is a Hollywood release, check whether it actually released in mainland China theaters. Many Hollywood films do NOT get China release. When in doubt, exclude from China section
