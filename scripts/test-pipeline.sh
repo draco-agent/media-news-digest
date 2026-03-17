@@ -48,11 +48,11 @@ USAGE:
 
 OPTIONS:
   --only TYPES      Only run these source types (comma-separated)
-                    Values: rss, twitter, github, reddit, web
+                    Values: rss, twitter, reddit, web
                     Example: --only twitter,rss
 
   --skip TYPES      Skip these source types (comma-separated)
-                    Values: rss, twitter, github, reddit, web
+                    Values: rss, twitter, reddit, web
                     Example: --skip web,reddit
 
   --topics TOPICS   Only include sources matching these topics (comma-separated)
@@ -210,7 +210,7 @@ else
 fi
 
 # GitHub
-if should_run "github"; then
+if false && should_run "github"; then
     run_step "fetch-github" python3 "$SCRIPT_DIR/fetch-github.py" --defaults "$DEFAULTS" --hours "$HOURS" --output "$OUTDIR/github.json" --force "${EXTRA_ARGS[@]}"
     validate_json "$OUTDIR/github.json" "github"
 else
@@ -268,7 +268,7 @@ MERGE_ARGS=("--output" "$OUTDIR/merged.json")
 [ -f "$OUTDIR/rss.json" ]     && MERGE_ARGS+=("--rss" "$OUTDIR/rss.json")
 [ -f "$OUTDIR/twitter.json" ] && MERGE_ARGS+=("--twitter" "$OUTDIR/twitter.json")
 [ -f "$OUTDIR/web.json" ]     && MERGE_ARGS+=("--web" "$OUTDIR/web.json")
-[ -f "$OUTDIR/github.json" ]  && MERGE_ARGS+=("--github" "$OUTDIR/github.json")
+# github not used in media-news-digest
 [ -f "$OUTDIR/reddit.json" ]  && MERGE_ARGS+=("--reddit" "$OUTDIR/reddit.json")
 
 if [ ${#MERGE_ARGS[@]} -gt 2 ]; then

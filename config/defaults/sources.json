@@ -599,7 +599,8 @@
                 "reviews",
                 "streaming",
                 "production"
-            ]
+            ],
+            "enabled": true
         },
         {
             "id": "rottentomatoes-rss",
@@ -611,7 +612,8 @@
             "topics": [
                 "reviews",
                 "box-office"
-            ]
+            ],
+            "enabled": true
         },
         {
             "id": "ercboxoffice-twitter",
