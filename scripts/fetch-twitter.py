@@ -10,9 +10,11 @@ Usage:
     python3 fetch-twitter.py --backend twitterapiio  # force twitterapi.io backend
 
 Environment:
-    TWITTER_API_BACKEND - Backend selection: "official", "twitterapiio", or "auto" (default: auto)
-    X_BEARER_TOKEN      - Twitter/X API bearer token (for official backend)
-    TWITTERAPI_IO_KEY   - twitterapi.io API key (for twitterapiio backend)
+    TWITTER_API_BACKEND - Backend selection: "auto" (default), "getxapi", "twitterapiio", or "official"
+                        Auto priority: getxapi ($0.001/call) > twitterapi.io (~$5/mo) > official X API
+    GETX_API_KEY        - GetXAPI API key (preferred backend, $0.001 per call)
+    TWITTERAPI_IO_KEY   - twitterapi.io API key (alternative backend, ~$5/month)
+    X_BEARER_TOKEN      - Twitter/X official API v2 bearer token (fallback)
 """
 
 import json
@@ -47,6 +49,7 @@ USER_LOOKUP_ENDPOINT = f"{OFFICIAL_API_BASE}/users/by"
 
 # twitterapi.io endpoints
 TWITTERAPIIO_BASE = "https://api.twitterapi.io"
+GETXAPI_BASE = "https://api.getxapi.com"
 
 
 def setup_logging(verbose: bool) -> logging.Logger:
@@ -490,6 +493,175 @@ class TwitterApiIoBackend(TwitterBackend):
         return results
 
 
+class GetXApiBackend(TwitterBackend):
+    """GetXAPI backend."""
+
+    def __init__(self, api_key: str):
+        """Initialize GetXAPI backend with API key validation."""
+        if not api_key or len(api_key) < 10:
+            raise ValueError("Invalid GETX_API_KEY format - expected at least 10 characters")
+        self.api_key = api_key
+        self.logger = logging.getLogger("fetch-twitter")
+
+    def _parse_date(self, date_str: str) -> Optional[datetime]:
+        """Parse GetXAPI date string with multiple format support.
+        
+        Supported formats:
+        - 'Tue Dec 10 07:00:30 +0000 2024' (Twitter format)
+        - '2024-12-10T07:00:30+00:00' (ISO 8601)
+        - '2024-12-10 07:00:30' (Simple datetime)
+        """
+        formats = [
+            "%a %b %d %H:%M:%S %z %Y",      # Twitter format
+            "%Y-%m-%dT%H:%M:%S%z",          # ISO 8601
+            "%Y-%m-%d %H:%M:%S",            # Simple datetime
+        ]
+        
+        for fmt in formats:
+            try:
+                dt = datetime.strptime(date_str, fmt)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                return dt
+            except (ValueError, TypeError):
+                continue
+        
+        self.logger.debug(f"Failed to parse date '{date_str}' with all known formats")
+        return None
+
+    def _parse_tweets_page(self, tweets: list, handle: str, topics: list, cutoff: datetime) -> list:
+        articles = []
+        for tweet in tweets:
+            tweet_id = tweet.get("id")
+            text = tweet.get("text")
+            created_at_raw = tweet.get("createdAt")
+            if not tweet_id or not text or not created_at_raw:
+                continue
+            if tweet.get("isReply"):
+                continue
+            if text.startswith("RT @"):
+                continue
+
+            created_at = self._parse_date(created_at_raw)
+            if not created_at or created_at < cutoff:
+                continue
+
+            link = tweet.get("url") or f"https://x.com/{handle}/status/{tweet_id}"
+
+            articles.append({
+                "title": clean_tweet_text(text),
+                "link": link,
+                "date": created_at.isoformat(),
+                "topics": topics[:],
+                "metrics": {
+                    "like_count": tweet.get("likeCount", 0),
+                    "retweet_count": tweet.get("retweetCount", 0),
+                    "reply_count": tweet.get("replyCount", 0),
+                    "quote_count": tweet.get("quoteCount", 0),
+                    "impression_count": tweet.get("viewCount", 0),
+                },
+                "tweet_id": tweet_id,
+            })
+        return articles
+
+    def _fetch_user_tweets(self, source: Dict[str, Any], cutoff: datetime) -> Dict[str, Any]:
+        handle = source["handle"].lstrip('@')
+        topics = source["topics"]
+
+        for attempt in range(RETRY_COUNT + 1):
+            try:
+                url = f"{GETXAPI_BASE}/twitter/user/tweets?{urlencode({'userName': handle})}"
+                headers = {
+                    "Authorization": f"Bearer {self.api_key}",
+                    "User-Agent": "MediaDigest/2.0",
+                }
+
+                req = Request(url, headers=headers)
+                with urlopen(req, timeout=TIMEOUT) as resp:
+                    raw = json.loads(resp.read().decode())
+
+                if raw.get("error"):
+                    return self._make_error(source, str(raw["error"])[:100], attempt)
+
+                articles = self._parse_tweets_page(
+                    raw.get("tweets", []), handle, topics, cutoff
+                )
+
+                has_more = raw.get("has_more", False)
+                next_cursor = raw.get("next_cursor")
+                
+                # Fetch page 2 if more results available (with retry)
+                if has_more and next_cursor and articles:
+                    oldest = min(datetime.fromisoformat(a["date"]) for a in articles)
+                    if oldest >= cutoff:
+                        for page_attempt in range(RETRY_COUNT + 1):
+                            try:
+                                page2_url = f"{GETXAPI_BASE}/twitter/user/tweets?{urlencode({'userName': handle, 'cursor': next_cursor})}"
+                                req2 = Request(page2_url, headers=headers)
+                                with urlopen(req2, timeout=TIMEOUT) as resp2:
+                                    raw2 = json.loads(resp2.read().decode())
+                                if raw2.get("error"):
+                                    raise ValueError(str(raw2["error"])[:100])
+                                articles.extend(self._parse_tweets_page(
+                                    raw2.get("tweets", []), handle, topics, cutoff
+                                ))
+                                has_more = raw2.get("has_more", False)
+                                break  # Success
+                            except Exception as e:
+                                self.logger.warning(f"@{handle}: page 2 attempt {page_attempt + 1} failed: {e}")
+                                if page_attempt < RETRY_COUNT:
+                                    time.sleep(RETRY_DELAY * (2 ** page_attempt))
+                                else:
+                                    self.logger.warning(f"@{handle}: page 2 failed after {RETRY_COUNT} attempts, keeping page 1 results")
+                                    has_more = False
+
+                if has_more and articles:
+                    oldest = min(datetime.fromisoformat(a["date"]) for a in articles)
+                    if oldest >= cutoff:
+                        logging.warning(f"@{handle}: results may be truncated ({len(articles)} tweets, more available)")
+
+                return self._make_result(source, articles, attempt)
+
+            except HTTPError as e:
+                if e.code == 429:
+                    error_msg = "Rate limit exceeded"
+                    logging.warning(f"Rate limit hit for @{handle}, attempt {attempt + 1}")
+                    if attempt < RETRY_COUNT:
+                        time.sleep(5)
+                        continue
+                else:
+                    error_msg = f"HTTP {e.code}: {e.reason}"
+
+            except Exception as e:
+                error_msg = str(e)[:100]
+                logging.debug(f"Attempt {attempt + 1} failed for @{handle}: {error_msg}")
+
+            if attempt < RETRY_COUNT:
+                time.sleep(RETRY_DELAY * (2 ** attempt))
+                continue
+
+            return self._make_error(source, error_msg, attempt)
+
+    def fetch_all(self, sources: List[Dict[str, Any]], cutoff: datetime) -> List[Dict[str, Any]]:
+        results: List[Dict[str, Any]] = []
+        total = len(sources)
+        done = 0
+        with ThreadPoolExecutor(max_workers=5) as pool:
+            futures = {pool.submit(self._fetch_user_tweets, source, cutoff): source
+                       for source in sources}
+            for future in as_completed(futures):
+                result = future.result()
+                results.append(result)
+                done += 1
+                if result["status"] == "ok":
+                    logging.info(f"[{done}/{total}] ✅ @{result['handle']}: {result['count']} tweets"
+                                 + (f" (top: {result['articles'][0]['metrics']['like_count']}❤️)" if result['articles'] else ""))
+                else:
+                    logging.warning(f"[{done}/{total}] ❌ @{result['handle']}: {result['error']}")
+
+        return results
+
+
 # ---------------------------------------------------------------------------
 # Backend selection
 # ---------------------------------------------------------------------------
@@ -499,6 +671,14 @@ def select_backend(backend_name: str, no_cache: bool = False) -> Optional[Twitte
 
     Returns None if no credentials are available for the chosen backend.
     """
+    if backend_name == "getxapi":
+        key = os.getenv("GETX_API_KEY")
+        if not key:
+            logging.error("GETX_API_KEY not set (required for getxapi backend)")
+            return None
+        logging.info("Using GetXAPI backend")
+        return GetXApiBackend(key)
+
     if backend_name == "twitterapiio":
         key = os.getenv("TWITTERAPI_IO_KEY")
         if not key:
@@ -515,8 +695,12 @@ def select_backend(backend_name: str, no_cache: bool = False) -> Optional[Twitte
         logging.info("Using official X API v2 backend")
         return OfficialBackend(token, no_cache=no_cache)
 
-    # auto: try twitterapiio first, then official
+    # auto: try getxapi first, then twitterapiio, then official
     if backend_name == "auto":
+        getx_key = os.getenv("GETX_API_KEY")
+        if getx_key:
+            logging.info("Auto-selected GetXAPI backend (GETX_API_KEY set)")
+            return GetXApiBackend(getx_key)
         key = os.getenv("TWITTERAPI_IO_KEY")
         if key:
             logging.info("Auto-selected twitterapi.io backend (TWITTERAPI_IO_KEY set)")
@@ -525,7 +709,7 @@ def select_backend(backend_name: str, no_cache: bool = False) -> Optional[Twitte
         if token:
             logging.info("Auto-selected official X API v2 backend (X_BEARER_TOKEN set)")
             return OfficialBackend(token, no_cache=no_cache)
-        logging.warning("No Twitter API credentials found (checked TWITTERAPI_IO_KEY, X_BEARER_TOKEN)")
+        logging.warning("No Twitter API credentials found (checked GETX_API_KEY, TWITTERAPI_IO_KEY, X_BEARER_TOKEN)")
         return None
 
     logging.error(f"Unknown backend: {backend_name}")
@@ -570,7 +754,7 @@ def main():
     """Main Twitter fetching function."""
     parser = argparse.ArgumentParser(
         description="Fetch recent tweets from Twitter/X KOL accounts. "
-                   "Supports official X API v2 and twitterapi.io backends.",
+                   "Supports official X API v2, GetXAPI, and twitterapi.io backends.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -628,10 +812,10 @@ Examples:
 
     parser.add_argument(
         "--backend",
-        choices=["official", "twitterapiio", "auto"],
+        choices=["official", "twitterapiio", "getxapi", "auto"],
         default=None,
         help="Twitter API backend (overrides TWITTER_API_BACKEND env var). "
-             "auto = twitterapiio if TWITTERAPI_IO_KEY set, else official if X_BEARER_TOKEN set"
+             "auto = getxapi if GETX_API_KEY set, else twitterapiio if TWITTERAPI_IO_KEY set, else official if X_BEARER_TOKEN set"
     )
 
     args = parser.parse_args()

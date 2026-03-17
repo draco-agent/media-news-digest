@@ -2,7 +2,7 @@
 """
 Unified data collection pipeline for media-news-digest.
 
-Runs all 5 fetch steps (RSS, Twitter, GitHub, Reddit, Web) in parallel,
+Runs all 6 fetch steps (RSS, Twitter, GitHub, GitHub Trending, Reddit, Web) in parallel,
 then merges + deduplicates + scores into a single output JSON.
 
 Replaces the agent's sequential 6-step tool-call loop with one command,
@@ -120,7 +120,9 @@ def main() -> int:
         description="Run the full media-news-digest data pipeline in one shot.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("--defaults", type=Path, required=True, help="Skill defaults config dir")
+    _script_dir = Path(__file__).resolve().parent
+    _default_defaults = _script_dir.parent / "config" / "defaults"
+    parser.add_argument("--defaults", type=Path, default=_default_defaults, help="Skill defaults config dir (default: <skill>/config/defaults)")
     parser.add_argument("--config", type=Path, default=None, help="User config overlay dir")
     parser.add_argument("--hours", type=int, default=48, help="Time window in hours")
     parser.add_argument("--freshness", type=str, default="pd", help="Web search freshness (pd/pw/pm)")
@@ -131,14 +133,23 @@ def main() -> int:
     parser.add_argument("--verbose", "-v", action="store_true")
     parser.add_argument("--force", action="store_true", help="Force re-fetch ignoring caches")
     parser.add_argument("--enrich", action="store_true", help="Enable full-text enrichment for top articles")
-    parser.add_argument("--skip", type=str, default="", help="Comma-separated list of steps to skip (rss,twitter,github,reddit,web)")
+    parser.add_argument("--skip", type=str, default="", help="Comma-separated list of steps to skip (rss,twitter,github,trending,reddit,web)")
+    parser.add_argument("--only", type=str, default="", help="Comma-separated list of steps to run (rss,twitter,github,trending,reddit,web). Others are skipped.")
     parser.add_argument("--reuse-dir", type=Path, default=None, help="Reuse existing intermediate directory instead of creating new one")
+    parser.add_argument("--debug", action="store_true", help="Keep intermediate fetch outputs (rss.json, twitter.json, etc.) alongside final output")
 
     args = parser.parse_args()
     logger = setup_logging(args.verbose)
 
-    # Parse --skip into a set
+    # Parse --skip and --only into sets
     skip_steps = set(s.strip().lower() for s in args.skip.split(',') if s.strip())
+    only_steps = set(s.strip().lower() for s in args.only.split(',') if s.strip())
+    
+    # --only takes precedence: skip everything not in the list
+    if only_steps:
+        all_step_keys = {"rss", "twitter", "github", "github trending", "reddit", "web"}
+        skip_steps = all_step_keys - {k for k in all_step_keys if any(o in k for o in only_steps)}
+        logger.info(f"🎯 --only {args.only} → running: {all_step_keys - skip_steps}")
 
     # Intermediate output paths
     import tempfile
@@ -262,6 +273,21 @@ def main() -> int:
     meta_path = args.output.with_suffix(".meta.json")
     with open(meta_path, "w") as f:
         json.dump(meta, f, indent=2)
+
+    if args.debug:
+        # Copy intermediate files next to final output for inspection
+        import shutil
+        debug_dir = args.output.parent / f"{args.output.stem}-debug"
+        debug_dir.mkdir(parents=True, exist_ok=True)
+        for fname in os.listdir(_run_dir):
+            src = Path(_run_dir) / fname
+            if src.is_file():
+                shutil.copy2(str(src), str(debug_dir / fname))
+        logger.info(f"🔍 Debug: intermediate files saved to {debug_dir}")
+        meta["debug_dir"] = str(debug_dir)
+        # Rewrite meta with debug_dir
+        with open(meta_path, "w") as f:
+            json.dump(meta, f, indent=2)
 
     if not args.reuse_dir:
         import shutil

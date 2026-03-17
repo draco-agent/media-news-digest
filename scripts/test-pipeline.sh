@@ -48,11 +48,11 @@ USAGE:
 
 OPTIONS:
   --only TYPES      Only run these source types (comma-separated)
-                    Values: rss, twitter, reddit, web
+                    Values: rss, twitter, github, reddit, web
                     Example: --only twitter,rss
 
   --skip TYPES      Skip these source types (comma-separated)
-                    Values: rss, twitter, reddit, web
+                    Values: rss, twitter, github, reddit, web
                     Example: --skip web,reddit
 
   --topics TOPICS   Only include sources matching these topics (comma-separated)
