@@ -89,6 +89,8 @@ Each article line must include its quality score using 🔥 prefix. Format: `�
 ### Topic Sections
 From `topics.json`: `emoji` + `label` headers, `<ITEMS_PER_SECTION>` items each.
 
+**⚠️ CRITICAL: Output topic sections in EXACTLY the order defined in `topics.json`. Do NOT reorder sections. The fixed order is: 票房 → 行业交易 → 中国影视 → 制作动态 → 北美上映 → 流媒体 → 颁奖季 → 电影节 → 影评口碑.**
+
 **⚠️ CRITICAL: Output articles in EXACTLY the same order as summarize-merged.py output (quality_score descending). Do NOT reorder, group by subtopic, or rearrange. The 🔥 scores must appear in strictly decreasing order within each section.**
 
 Every topic **must appear** — even with 1-2 items. If sparse, note "本日该板块较少".

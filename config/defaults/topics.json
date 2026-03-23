@@ -4,6 +4,66 @@
     "_version": "1.5.1",
     "topics": [
         {
+            "id": "box-office",
+            "emoji": "🎟️",
+            "label": "Box Office / 票房",
+            "description": "North American and global box office results, opening weekend estimates, milestones",
+            "search": {
+                "queries": [
+                    "box office results this week",
+                    "weekend box office numbers",
+                    "movie opening weekend gross"
+                ],
+                "must_include": [
+                    "box office",
+                    "gross",
+                    "opening weekend",
+                    "domestic",
+                    "worldwide gross"
+                ],
+                "exclude": [
+                    "tutorial",
+                    "how to invest"
+                ]
+            },
+            "display": {
+                "max_items": 6,
+                "style": "detailed"
+            },
+            "order": 1
+        },
+        {
+            "id": "deals",
+            "emoji": "💰",
+            "label": "Deals & Business / 行业交易",
+            "description": "M&A, rights acquisitions, talent deals, studio restructuring, layoffs, financial results",
+            "search": {
+                "queries": [
+                    "Hollywood studio deal acquisition",
+                    "entertainment industry merger",
+                    "film rights deal"
+                ],
+                "must_include": [
+                    "deal",
+                    "acquire",
+                    "merger",
+                    "rights",
+                    "contract",
+                    "layoff",
+                    "restructur"
+                ],
+                "exclude": [
+                    "stock tips",
+                    "investment advice"
+                ]
+            },
+            "display": {
+                "max_items": 5,
+                "style": "detailed"
+            },
+            "order": 2
+        },
+        {
             "id": "china",
             "emoji": "🇨🇳",
             "label": "China / 中国影视",
@@ -53,7 +113,8 @@
                 "max_items": 5,
                 "style": "detailed"
             },
-            "note": "Strict: only news primarily about China mainland market. Articles mentioning China as secondary market should go to box-office or other sections."
+            "note": "Strict: only news primarily about China mainland market. Articles mentioning China as secondary market should go to box-office or other sections.",
+            "order": 3
         },
         {
             "id": "production",
@@ -94,37 +155,8 @@
             "display": {
                 "max_items": 8,
                 "style": "detailed"
-            }
-        },
-        {
-            "id": "deals",
-            "emoji": "💰",
-            "label": "Deals & Business / 行业交易",
-            "description": "M&A, rights acquisitions, talent deals, studio restructuring, layoffs, financial results",
-            "search": {
-                "queries": [
-                    "Hollywood studio deal acquisition",
-                    "entertainment industry merger",
-                    "film rights deal"
-                ],
-                "must_include": [
-                    "deal",
-                    "acquire",
-                    "merger",
-                    "rights",
-                    "contract",
-                    "layoff",
-                    "restructur"
-                ],
-                "exclude": [
-                    "stock tips",
-                    "investment advice"
-                ]
             },
-            "display": {
-                "max_items": 5,
-                "style": "detailed"
-            }
+            "order": 4
         },
         {
             "id": "upcoming",
@@ -164,35 +196,8 @@
             "display": {
                 "max_items": 5,
                 "style": "detailed"
-            }
-        },
-        {
-            "id": "box-office",
-            "emoji": "🎟️",
-            "label": "Box Office / 票房",
-            "description": "North American and global box office results, opening weekend estimates, milestones",
-            "search": {
-                "queries": [
-                    "box office results this week",
-                    "weekend box office numbers",
-                    "movie opening weekend gross"
-                ],
-                "must_include": [
-                    "box office",
-                    "gross",
-                    "opening weekend",
-                    "domestic",
-                    "worldwide gross"
-                ],
-                "exclude": [
-                    "tutorial",
-                    "how to invest"
-                ]
             },
-            "display": {
-                "max_items": 6,
-                "style": "detailed"
-            }
+            "order": 5
         },
         {
             "id": "streaming",
@@ -223,7 +228,8 @@
             "display": {
                 "max_items": 6,
                 "style": "detailed"
-            }
+            },
+            "order": 6
         },
         {
             "id": "awards",
@@ -254,7 +260,8 @@
             "display": {
                 "max_items": 6,
                 "style": "detailed"
-            }
+            },
+            "order": 7
         },
         {
             "id": "festivals",
@@ -285,7 +292,8 @@
             "display": {
                 "max_items": 6,
                 "style": "detailed"
-            }
+            },
+            "order": 8
         },
         {
             "id": "reviews",
@@ -314,7 +322,8 @@
             "display": {
                 "max_items": 5,
                 "style": "detailed"
-            }
+            },
+            "order": 9
         }
     ]
 }
