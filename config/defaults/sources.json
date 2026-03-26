@@ -917,6 +917,150 @@
                 "festivals"
             ],
             "note": "A24 indie studio"
+        },
+        {
+            "id": "yt-dan-murrell",
+            "type": "rss",
+            "name": "Dan Murrell (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCWQtaIyRnx3cnokbfwY6bgg",
+            "enabled": true,
+            "priority": false,
+            "note": "Weekly box office analysis (Charts With Dan) + industry news",
+            "topics": [
+                "box-office",
+                "reviews"
+            ]
+        },
+        {
+            "id": "yt-beyond-the-trailer",
+            "type": "rss",
+            "name": "Beyond The Trailer (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCddiUEpeqJcYeBxX1IVBKvQ",
+            "enabled": true,
+            "priority": false,
+            "note": "Grace Randolph — box office analysis, movie reviews",
+            "topics": [
+                "box-office",
+                "reviews",
+                "upcoming"
+            ]
+        },
+        {
+            "id": "yt-john-campea",
+            "type": "rss",
+            "name": "John Campea (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCYyDbdaja1UDNdFSwUrYVGA",
+            "enabled": true,
+            "priority": false,
+            "note": "Hollywood industry discussion, movie news deep dives",
+            "topics": [
+                "production",
+                "deals",
+                "upcoming"
+            ]
+        },
+        {
+            "id": "yt-chris-stuckmann",
+            "type": "rss",
+            "name": "Chris Stuckmann (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCqEeDAUf4Mg0GgEN658tkA",
+            "enabled": true,
+            "priority": false,
+            "note": "Film reviews and analysis, 2M+ subscribers",
+            "topics": [
+                "reviews"
+            ]
+        },
+        {
+            "id": "yt-nerdwriter",
+            "type": "rss",
+            "name": "Nerdwriter1 (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJkMlOu7faDgqh4PfzbpLdg",
+            "enabled": true,
+            "priority": false,
+            "note": "Video essays on film, culture, and art",
+            "topics": [
+                "reviews",
+                "festivals"
+            ]
+        },
+        {
+            "id": "yt-lessons-from-screenplay",
+            "type": "rss",
+            "name": "Lessons from the Screenplay (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCErSSa3CaP_GJxmFpdjG9Jw",
+            "enabled": true,
+            "priority": false,
+            "note": "Screenplay and storytelling analysis",
+            "topics": [
+                "reviews",
+                "production"
+            ]
+        },
+        {
+            "id": "yt-cinefix",
+            "type": "rss",
+            "name": "CineFix (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCVtL1edhT8qqY-j2JIndMzg",
+            "enabled": true,
+            "priority": false,
+            "note": "Film history Top 10 lists",
+            "topics": [
+                "reviews"
+            ]
+        },
+        {
+            "id": "yt-variety",
+            "type": "rss",
+            "name": "Variety (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgRQHK8Ttr1j9xCEpCAlgbQ",
+            "enabled": true,
+            "priority": true,
+            "note": "Official Variety channel — interviews, events, award shows",
+            "topics": [
+                "awards",
+                "production",
+                "deals"
+            ]
+        },
+        {
+            "id": "yt-screen-junkies",
+            "type": "rss",
+            "name": "Screen Junkies (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCOpcACMWblDls9Z6GERVi1A",
+            "enabled": true,
+            "priority": false,
+            "note": "Honest Trailers, movie reviews, fan discussions",
+            "topics": [
+                "reviews",
+                "upcoming"
+            ]
+        },
+        {
+            "id": "yt-collider",
+            "type": "rss",
+            "name": "Collider Videos (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMtFAi84ehTSYSE9XoHefig",
+            "enabled": true,
+            "priority": false,
+            "note": "Movie & TV news discussions, roundtables",
+            "topics": [
+                "production",
+                "streaming",
+                "upcoming"
+            ]
+        },
+        {
+            "id": "yt-every-frame-a-painting",
+            "type": "rss",
+            "name": "Every Frame a Painting (YouTube)",
+            "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCjFqcJQXGZ6T6sxyFB-5i6A",
+            "enabled": true,
+            "priority": false,
+            "note": "Acclaimed film analysis essays (less frequent)",
+            "topics": [
+                "reviews"
+            ]
         }
     ]
 }
