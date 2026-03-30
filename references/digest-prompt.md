@@ -126,12 +126,17 @@ Also add two subsections:
 - **📽️ 本周北美新上映** — list wide releases this week (title + Chinese name + date + studio + genre)
 - **🔜 下周北美即将上映** — list notable upcoming releases next week from Box Office Mojo schedule
 
-Place this section **after** 📝 Deep Reads and before Stats Footer.
+Place this section **immediately after** the 🎟️ Box Office / 票房 bullet-list section (before 💰 Deals). The order must be:
+1. `## 🎟️ Box Office / 票房` (news bullets)
+2. `## 🎟️ 北美周末票房 Top 10` (table + 📽️ 本周新上映 + 🔜 下周即将上映)
+3. `## 💰 Deals & Business / 行业交易`
+
+**Do NOT put the table at the end of the report.**
 
 For PDF generation, use `--is-html` flag to preserve table rendering:
 ```bash
 python3 <SKILL_DIR>/scripts/sanitize-html.py -i <archive-file>.md -o /tmp/md-email.html
-python3 <SKILL_DIR>/scripts/generate-pdf.py --is-html -i /tmp/md-email.html -o /tmp/md-digest.pdf
+python3 <SKILL_DIR>/scripts/generate-pdf.py --is-html -i /tmp/md-email.html -o /tmp/海外影视周报-<DATE>.pdf
 ```
 
 ### Rules
@@ -169,7 +174,7 @@ Save to `<WORKSPACE>/archive/media-news-digest/<MODE>-YYYY-MM-DD.md`. Delete fil
    - Generate PDF attachment:
      ```bash
      python3 <SKILL_DIR>/scripts/sanitize-html.py -i <WORKSPACE>/archive/media-news-digest/<MODE>-<DATE>.md -o /tmp/md-email.html
-     python3 <SKILL_DIR>/scripts/generate-pdf.py --is-html -i /tmp/md-email.html -o /tmp/md-digest.pdf
+     python3 <SKILL_DIR>/scripts/generate-pdf.py --is-html -i /tmp/md-email.html -o /tmp/海外影视周报-<DATE>.pdf
      ```
    - Send email with PDF attached using the `send-email.py` script (handles MIME correctly). **Email must contain ALL the same items as Discord.**
      ```bash
