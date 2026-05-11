@@ -118,4 +118,4 @@ MODE = weekly, FRESHNESS = pw, RSS_HOURS = 168
 
 ## Dependencies
 
-Python 3.8+ is required. Install `requirements.txt` for reliable RSS parsing (`feedparser`), config validation (`jsonschema`), and PDF rendering (`weasyprint`). PDF output also needs system libraries/fonts such as Cairo/Pango and Noto CJK fonts; on Ubuntu install `msmtp fonts-noto-cjk python3-venv` as needed for email/PDF delivery.
+Python 3.8+ is required. Install `requirements.txt` for reliable RSS parsing (`feedparser`), config validation (`jsonschema`), and PDF rendering (`weasyprint`). PDF output also needs system libraries/fonts such as Cairo/Pango, Noto CJK fonts, and `fonts-noto-color-emoji` so emoji glyphs are rendered with a real emoji font rather than CJK/fontconfig fallback; on Ubuntu install `msmtp fonts-noto-cjk fonts-noto-color-emoji python3-venv` as needed for email/PDF delivery.
