@@ -182,7 +182,7 @@ Save to `<WORKSPACE>/archive/media-news-digest/<MODE>-YYYY-MM-DD.md`. Delete fil
        --to '<EMAIL>' \
        --subject '<SUBJECT>' \
        --html /tmp/md-email.html \
-       --attach /tmp/md-digest.pdf \
+       --attach /tmp/海外影视周报-<DATE>.pdf \
        --from '<EMAIL_FROM>'
      ```
    - Omit `--from` if `<EMAIL_FROM>` is not set. Omit `--attach` if PDF generation failed. SUBJECT must be a static string. If delivery fails, log error and continue.

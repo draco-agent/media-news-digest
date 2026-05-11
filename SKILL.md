@@ -118,4 +118,4 @@ MODE = weekly, FRESHNESS = pw, RSS_HOURS = 168
 
 ## Dependencies
 
-Python 3.8+ is required. Install `requirements.txt` for reliable RSS parsing (`feedparser`) and config validation (`jsonschema`).
+Python 3.8+ is required. Install `requirements.txt` for reliable RSS parsing (`feedparser`), config validation (`jsonschema`), and PDF rendering (`weasyprint`). PDF output also needs system libraries/fonts such as Cairo/Pango and Noto CJK fonts; on Ubuntu install `msmtp fonts-noto-cjk python3-venv` as needed for email/PDF delivery.

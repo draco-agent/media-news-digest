@@ -7,6 +7,9 @@ feedparser>=6.0.0
 # JSON Schema validation (optional)
 jsonschema>=4.0.0
 
+# PDF generation with Chinese typography and attachments
+weasyprint>=68.0
+
 # Standard library modules used:
 # - json
 # - urllib.request
