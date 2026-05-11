@@ -52,22 +52,38 @@ def _render_table(rows):
     """Render markdown table rows as styled HTML table."""
     if not rows:
         return ''
-    h = '<table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:13px">'
+
+    # The weekly box-office table has 7 columns and can otherwise be clipped in
+    # email/PDF rendering. Use fixed column widths + compact typography so the
+    # whole table remains visible instead of overflowing the 640px body.
+    column_widths = ['5%', '24%', '14%', '14%', '10%', '15%', '18%'] if len(rows[0]) == 7 else []
+
+    h = ('<table style="width:100%;border-collapse:collapse;margin:16px 0;'
+         'font-size:11px;line-height:1.35;table-layout:fixed">')
+    if column_widths:
+        h += '<colgroup>'
+        for width in column_widths:
+            h += f'<col style="width:{width}">'
+        h += '</colgroup>'
     h += '<thead><tr>'
-    for cell in rows[0]:
-        h += (f'<th style="background:#1F4E79;color:white;padding:8px 6px;'
-              f'text-align:center;border:1px solid #ddd;font-weight:bold">'
+    for i, cell in enumerate(rows[0]):
+        width_style = f'width:{column_widths[i]};' if i < len(column_widths) else ''
+        h += (f'<th style="{width_style}background:#1F4E79;color:white;padding:6px 4px;'
+              f'text-align:center;border:1px solid #ddd;font-weight:bold;'
+              f'word-break:break-word;overflow-wrap:anywhere">'
               f'{_process_inline(cell)}</th>')
     h += '</tr></thead><tbody>'
     for row in rows[1:]:
         h += '<tr>'
         for i, cell in enumerate(row):
             align = 'left' if i == 1 else 'center'
-            style = f'padding:6px;text-align:{align};border:1px solid #eee'
+            # Keep numbers/dates compact, allow long film names to wrap.
+            wrap_style = 'word-break:break-word;overflow-wrap:anywhere' if i == 1 else 'white-space:normal;word-break:keep-all'
+            style = f'padding:5px 4px;text-align:{align};border:1px solid #eee;{wrap_style}'
             if len(row) > 4 and i == 4:
-                if any(x in cell for x in ['\u0001f53b', '-']) and 'NEW' not in cell:
+                if any(x in cell for x in ['🔻', '-']) and 'NEW' not in cell:
                     style += ';color:#CC0000;background:#FFF5F5'
-                elif any(x in cell for x in ['\u0001f53a', '+']) or 'NEW' in cell:
+                elif any(x in cell for x in ['🔺', '+']) or 'NEW' in cell:
                     style += ';color:#008000;background:#F0FFF0'
             h += f'<td style="{style}">{_process_inline(cell)}</td>'
         h += '</tr>'
@@ -81,7 +97,7 @@ def markdown_to_safe_html(md_content: str) -> str:
     
     # Email wrapper open
     html_parts.append(
-        '<div style="max-width:640px;margin:0 auto;font-family:'
+        '<div style="max-width:760px;margin:0 auto;font-family:'
         '-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;'
         'color:#1a1a1a;line-height:1.6">'
     )

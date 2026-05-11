@@ -79,16 +79,56 @@ def _process_inline(text: str) -> str:
     return result
 
 
+def _render_table(rows):
+    """Render markdown table rows for PDF output."""
+    if not rows:
+        return ''
+
+    colgroup = ''
+    if len(rows[0]) == 7:
+        widths = ['5%', '24%', '14%', '14%', '10%', '15%', '18%']
+        colgroup = '<colgroup>' + ''.join(f'<col style="width:{w}">' for w in widths) + '</colgroup>'
+
+    html_rows = [f'<table class="box-office-table">{colgroup}<thead><tr>']
+    for cell in rows[0]:
+        html_rows.append(f'<th>{_process_inline(cell)}</th>')
+    html_rows.append('</tr></thead><tbody>')
+
+    for row in rows[1:]:
+        html_rows.append('<tr>')
+        for i, cell in enumerate(row):
+            classes = []
+            if i == 1:
+                classes.append('film-title')
+            if len(row) > 4 and i == 4:
+                if any(x in cell for x in ['🔻', '-']) and 'NEW' not in cell:
+                    classes.append('down')
+                elif any(x in cell for x in ['🔺', '+']) or 'NEW' in cell:
+                    classes.append('up')
+            class_attr = f' class="{" ".join(classes)}"' if classes else ''
+            html_rows.append(f'<td{class_attr}>{_process_inline(cell)}</td>')
+        html_rows.append('</tr>')
+
+    html_rows.append('</tbody></table>')
+    return ''.join(html_rows)
+
+
 def markdown_to_html(md_content: str) -> str:
     """Convert markdown digest to styled HTML for PDF rendering."""
     lines = md_content.strip().split('\n')
     html_parts = []
     in_list = False
+    in_table = False
+    table_rows = []
 
     for line in lines:
         stripped = line.strip()
 
         if not stripped:
+            if in_table:
+                html_parts.append(_render_table(table_rows))
+                in_table = False
+                table_rows = []
             if in_list:
                 html_parts.append('</ul>')
                 in_list = False
@@ -96,12 +136,20 @@ def markdown_to_html(md_content: str) -> str:
 
         # H1
         if stripped.startswith('# '):
+            if in_table:
+                html_parts.append(_render_table(table_rows))
+                in_table = False
+                table_rows = []
             title = _process_inline(stripped[2:])
             html_parts.append(f'<h1>{title}</h1>')
             continue
 
         # H2
         if stripped.startswith('## '):
+            if in_table:
+                html_parts.append(_render_table(table_rows))
+                in_table = False
+                table_rows = []
             if in_list:
                 html_parts.append('</ul>')
                 in_list = False
@@ -111,6 +159,10 @@ def markdown_to_html(md_content: str) -> str:
 
         # H3
         if stripped.startswith('### '):
+            if in_table:
+                html_parts.append(_render_table(table_rows))
+                in_table = False
+                table_rows = []
             if in_list:
                 html_parts.append('</ul>')
                 in_list = False
@@ -128,6 +180,25 @@ def markdown_to_html(md_content: str) -> str:
         if stripped == '---':
             html_parts.append('<hr>')
             continue
+
+        # Table row: | col | col |
+        if stripped.startswith('|') and '|' in stripped[1:]:
+            if in_list:
+                html_parts.append('</ul>')
+                in_list = False
+            if not in_table:
+                in_table = True
+                table_rows = []
+            if re.match(r'^\|[\s\-|:]+\|$', stripped):
+                continue
+            cells = [c.strip() for c in stripped.split('|')[1:-1]]
+            table_rows.append(cells)
+            continue
+
+        if in_table:
+            html_parts.append(_render_table(table_rows))
+            in_table = False
+            table_rows = []
 
         # Bullet items
         if stripped.startswith('• ') or stripped.startswith('- '):
@@ -161,6 +232,9 @@ def markdown_to_html(md_content: str) -> str:
         # Regular paragraph
         text = _process_inline(stripped)
         html_parts.append(f'<p>{text}</p>')
+
+    if in_table:
+        html_parts.append(_render_table(table_rows))
 
     if in_list:
         html_parts.append('</ul>')
@@ -285,6 +359,49 @@ p.footer {
     font-size: 8.5pt;
     color: #9ca3af;
     margin-top: 4px;
+}
+
+.box-office-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 14px 0 18px;
+    font-size: 8.2pt;
+    line-height: 1.25;
+    page-break-inside: avoid;
+}
+
+.box-office-table th {
+    background: #1f4e79;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    border: 0.6pt solid #d1d5db;
+    padding: 4pt 3pt;
+    overflow-wrap: anywhere;
+}
+
+.box-office-table td {
+    text-align: center;
+    border: 0.5pt solid #e5e7eb;
+    padding: 3.5pt 3pt;
+    word-break: keep-all;
+}
+
+.box-office-table td.film-title {
+    text-align: left;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.box-office-table td.up {
+    color: #047857;
+    background: #ecfdf5;
+}
+
+.box-office-table td.down {
+    color: #b91c1c;
+    background: #fef2f2;
 }
 
 /* First page title area */

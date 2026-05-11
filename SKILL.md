@@ -1,7 +1,7 @@
 ---
 name: media-news-digest
 description: Generate media & entertainment industry news digests. Covers Hollywood trades (THR, Deadline, Variety), box office, streaming, awards season, film festivals, and production news. Four-source data collection from RSS feeds, Twitter/X KOLs, Reddit, and web search. Pipeline-based scripts with retry mechanisms and deduplication. Supports Discord and email output with PDF attachments.
-version: "2.1.1"
+version: "2.1.2"
 homepage: https://github.com/draco-agent/media-news-digest
 source: https://github.com/draco-agent/media-news-digest
 metadata:

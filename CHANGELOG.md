@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.1.2 - 2026-05-11
+
+### Fixed
+- Box office Top 10 table now uses compact fixed column widths in sanitized HTML so all columns remain visible.
+- PDF markdown conversion now renders markdown tables as styled HTML tables instead of plain paragraphs.
+
 ## v2.1.1 - 2026-03-02
 
 ### Fixed
