@@ -1,4 +1,4 @@
-# Tech Digest Python Dependencies
+# Media News Digest Python Dependencies
 # Install with: pip install -r requirements.txt
 
 # RSS parsing (optional, will fallback to regex if not available)
@@ -24,5 +24,5 @@ jsonschema>=4.0.0
 # - sys
 # - os
 
-# Note: All scripts are designed to work with Python 3.8+ standard library only.
-# The optional dependencies above enhance functionality but are not required.
+# Note: Core scripts target Python 3.8+. Install the dependencies above for full
+# functionality; RSS parsing falls back to a basic regex parser without feedparser.

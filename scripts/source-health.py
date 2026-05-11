@@ -5,7 +5,7 @@ Source health monitoring for media-news-digest pipeline.
 Tracks per-source success/failure history and reports unhealthy sources.
 
 Usage:
-    python3 source-health.py --rss rss.json --twitter twitter.json --github github.json
+    python3 source-health.py --rss rss.json --twitter twitter.json --reddit reddit.json --web web.json
 """
 
 import json
@@ -113,7 +113,6 @@ def main():
     parser = argparse.ArgumentParser(description="Track source health for media-news-digest pipeline.")
     parser.add_argument("--rss", type=Path, help="RSS output JSON")
     parser.add_argument("--twitter", type=Path, help="Twitter output JSON")
-    parser.add_argument("--github", type=Path, help="GitHub output JSON")
     parser.add_argument("--reddit", type=Path, help="Reddit output JSON")
     parser.add_argument("--web", type=Path, help="Web search output JSON")
     parser.add_argument("--verbose", "-v", action="store_true")
@@ -124,7 +123,7 @@ def main():
     now = time.time()
 
     # Standard sources (use 'sources' key)
-    for path in [args.rss, args.twitter, args.github]:
+    for path in [args.rss, args.twitter]:
         sources = load_source_file(path)
         if sources:
             update_health(health, sources, now)

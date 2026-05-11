@@ -53,14 +53,14 @@ Automated media & entertainment industry news digest system. Covers Hollywood tr
 
 2. **Use Templates**: Apply Discord or email templates to merged output
 
-## Data Sources (65 total, 64 enabled)
+## Data Sources (76 total sources, 75 enabled)
 
-- **RSS Feeds (36, 35 enabled)**: THR, Deadline, Variety, IndieWire, The Wrap, Collider, Vulture, Awards Daily, Gold Derby, Screen Rant, Empire, The Playlist, /Film, Entertainment Weekly, Roger Ebert, CinemaBlend, Den of Geek, The Direct, MovieWeb, CBR, What's on Netflix, Decider, Anime News Network, and more
-- **Twitter/X KOLs (18)**: @THR, @DEADLINE, @Variety, @FilmUpdates, @DiscussingFilm, @BoxOfficeMojo, @MattBelloni, @Borys_Kit, @TheAcademy, @letterboxd, @A24, and more
-- **Reddit (11)**: r/movies, r/boxoffice, r/television, r/Oscars, r/TrueFilm, r/entertainment, r/netflix, r/marvelstudios, r/DC_Cinematic, r/anime, r/flicks
-- **Web Search (9 topics)**: Brave Search / Tavily with freshness filters
+- **RSS 46 enabled feeds**: THR, Deadline, Variety, IndieWire, The Wrap, Collider, YouTube RSS mirrors, and more
+- **Twitter/X 18 KOLs**: @THR, @DEADLINE, @Variety, @FilmUpdates, @DiscussingFilm, @BoxOfficeMojo, @MattBelloni, @TheAcademy, @letterboxd, @A24, and more
+- **Reddit 11 subreddits**: r/movies, r/boxoffice, r/television, r/Oscars, r/TrueFilm, r/entertainment, r/netflix, r/marvelstudios, r/DC_Cinematic, r/anime, r/flicks
+- **Web Search (9 topic sections)**: Brave Search / Tavily with freshness filters
 
-## Topics (9 sections)
+## Topics (9 topic sections)
 
 - 🇨🇳 China / 中国影视 — China mainland box office, Chinese films, Chinese streaming
 - 🎬 Production / 制作动态 — New projects, casting, filming updates
@@ -118,4 +118,4 @@ MODE = weekly, FRESHNESS = pw, RSS_HOURS = 168
 
 ## Dependencies
 
-All scripts work with **Python 3.8+ standard library only**. `feedparser` optional but recommended.
+Python 3.8+ is required. Install `requirements.txt` for reliable RSS parsing (`feedparser`) and config validation (`jsonschema`).

@@ -385,6 +385,89 @@ def apply_previous_digest_penalty(articles: List[Dict[str, Any]],
     return articles
 
 
+MEDIA_TOPIC_PRIORITY = {
+    "box-office": 0,
+    "deals": 1,
+    "china": 2,
+    "production": 3,
+    "upcoming": 4,
+    "streaming": 5,
+    "awards": 6,
+    "festivals": 7,
+    "reviews": 8,
+    "uncategorized": 99,
+}
+
+
+NON_MEDIA_KEYWORDS = {
+    "openai", "chatgpt", "crypto", "bitcoin", "ethereum", "llm", "ai agent",
+    "iphone", "android", "startup", "funding round", "gpu", "kubernetes",
+}
+
+
+def classify_media_topics(article: Dict[str, Any]) -> List[str]:
+    """Infer final media topics from article text before falling back to source tags.
+
+    Broad trade publications often carry many source-level topics. This lightweight
+    classifier keeps those tags as hints, but lets obvious title/snippet signals pick
+    a better primary section and drops clearly non-media tech/crypto spillover.
+    """
+    raw_topics = [t for t in article.get("topics", []) if t]
+    title_text = str(article.get("title", "")).lower()
+    text = " ".join(str(article.get(k, "")) for k in ("title", "snippet", "summary", "description")).lower()
+    if not text.strip():
+        return raw_topics or ["uncategorized"]
+
+    media_terms = (
+        "movie", "film", "box office", "hollywood", "theater", "theatre", "cinema",
+        "tv", "television", "series", "streaming", "netflix", "disney", "hbo",
+        "oscars", "emmys", "bafta", "cannes", "sundance", "festival", "actor",
+        "actress", "director", "studio", "trailer", "release date", "anime",
+    )
+    if (
+        any(term in title_text for term in NON_MEDIA_KEYWORDS)
+        and ("unrelated to" in text or not any(term in title_text for term in media_terms))
+    ):
+        return []
+
+    classified: List[str] = []
+    def add(topic: str) -> None:
+        if topic not in classified:
+            classified.append(topic)
+
+    def has_word(*words: str) -> bool:
+        return any(re.search(rf"\b{re.escape(word)}\b", text) for word in words)
+
+    if any(term in text for term in ("china box office", "chinese box office", "mainland china", "chinese film", "chinese movie", "iqiyi", "youku", "bilibili", "maoyan", "douban", "中国", "内地", "华语")):
+        add("china")
+    if any(term in text for term in ("box office", "opening weekend", "domestic gross", "worldwide gross", "weekend frame", "grosses")):
+        add("box-office")
+    if has_word("deal", "deals", "acquire", "acquires", "acquired", "acquisition", "merger", "rights", "contract", "layoff", "layoffs", "sells", "sales", "lands") or "restructur" in text:
+        add("deals")
+    if any(term in text for term in ("release date", "in theaters", "in theatres", "opening this weekend", "trailer", "dated for", "set for", "scheduled", "moves to")):
+        add("upcoming")
+    if any(term in text for term in ("netflix", "disney+", "apple tv", "hbo", "prime video", "streaming", "peacock", "hulu")) or re.search(r"\b(?:hbo\s+max|max\s+(?:streaming|original|series)|on\s+max|to\s+max|from\s+max)\b", text):
+        add("streaming")
+    if any(term in text for term in ("oscar", "academy award", "golden globe", "emmy", "bafta", "award", "nominated", "nomination")):
+        add("awards")
+    if any(term in text for term in ("cannes", "venice", "tiff", "sundance", "berlin", "festival")):
+        add("festivals")
+    if any(term in text for term in ("review", "critic", "rotten tomatoes", "metacritic", "buzz", "reaction")):
+        add("reviews")
+    if any(term in text for term in ("cast", "casting", "direct", "director", "greenlit", "production", "filming", "wraps", "sequel", "reboot", "adaptation", "stars in", "star in")):
+        add("production")
+
+    if classified:
+        # China is a strict market section: keep explicit China-market stories there
+        # even when they also mention box office or deals.
+        if "china" in classified:
+            return ["china"]
+        return sorted(classified, key=lambda t: MEDIA_TOPIC_PRIORITY.get(t, 99))
+
+    valid_raw = [t for t in raw_topics if t in MEDIA_TOPIC_PRIORITY]
+    return sorted(valid_raw, key=lambda t: MEDIA_TOPIC_PRIORITY.get(t, 99)) or ["uncategorized"]
+
+
 def group_by_topics(articles: List[Dict[str, Any]], dedup_across_topics: bool = True) -> Dict[str, List[Dict[str, Any]]]:
     """Group articles by their topics.
     
@@ -396,23 +479,15 @@ def group_by_topics(articles: List[Dict[str, Any]], dedup_across_topics: bool = 
     topic_groups = {}
     seen_article_ids: Set[str] = set()  # Track which articles have been placed
     
-    # Topic priority order (higher priority topics get first pick)
-    # If an article matches multiple topics, it goes to the highest priority one
-    topic_priority = {
-        "llm": 0,
-        "ai_agent": 1,
-        "crypto": 2,
-        "github": 3,
-        "trending": 4,
-        "uncategorized": 5,
-    }
-    
     # Sort topics by priority for deterministic assignment
     def get_topic_priority(topic: str) -> int:
-        return topic_priority.get(topic, 99)
+        return MEDIA_TOPIC_PRIORITY.get(topic, 99)
     
     for article in articles:
-        topics = article.get("topics", [])
+        topics = classify_media_topics(article)
+        if not topics:
+            logging.debug(f"Skip non-media article: '{article.get('title', '')[:80]}...'")
+            continue
         if not topics:
             topics = ["uncategorized"]
         
@@ -451,11 +526,11 @@ def group_by_topics(articles: List[Dict[str, Any]], dedup_across_topics: bool = 
 def main():
     """Main merge and scoring function."""
     parser = argparse.ArgumentParser(
-        description="Merge articles from all sources with quality scoring and deduplication.",
+        description="Merge media digest articles with quality scoring and deduplication.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-    python3 merge-sources.py --rss rss.json --twitter twitter.json --web web.json
+    python3 merge-sources.py --rss rss.json --twitter twitter.json --reddit reddit.json --web web.json
     python3 merge-sources.py --rss rss.json --output merged.json --verbose
     python3 merge-sources.py --archive-dir workspace/archive/media-digest
         """
@@ -479,18 +554,7 @@ Examples:
         help="Web search results JSON file"
     )
     
-    parser.add_argument(
-        "--github",
-        type=Path,
-        help="GitHub releases results JSON file"
-    )
-    
-    parser.add_argument(
-        "--trending",
-        type=Path,
-        help="GitHub trending repos JSON file"
-    )
-    
+
     parser.add_argument(
         "--reddit",
         type=Path,
@@ -529,14 +593,11 @@ Examples:
         rss_data = load_source_data(args.rss)
         twitter_data = load_source_data(args.twitter)
         web_data = load_source_data(args.web)
-        github_data = load_source_data(args.github)
-        trending_data = load_source_data(args.trending) if hasattr(args, "trending") else None
         reddit_data = load_source_data(args.reddit)
         
         logger.info(f"Loaded sources - RSS: {rss_data.get('total_articles', 0)}, "
                    f"Twitter: {twitter_data.get('total_articles', 0)}, "
                    f"Web: {web_data.get('total_articles', 0)}, "
-                   f"GitHub: {github_data.get('total_articles', 0)} releases + {trending_data.get('total', 0) if trending_data else 0} trending, "
                    f"Reddit: {reddit_data.get('total_posts', 0)}")
         
         # Collect all articles with source context
@@ -575,15 +636,6 @@ Examples:
                 article["quality_score"] = calculate_base_score(article, web_source)
                 all_articles.append(article)
         
-        # Process GitHub articles
-        for source in github_data.get("sources", []):
-            for article in source.get("articles", []):
-                article["source_type"] = "github"
-                article["source_name"] = source.get("name", "")
-                article["source_id"] = source.get("source_id", "")
-                article["quality_score"] = calculate_base_score(article, source)
-                all_articles.append(article)
-        
         # Process Reddit articles
         for source in reddit_data.get("subreddits", []):
             for article in source.get("articles", []):
@@ -605,25 +657,6 @@ Examples:
                     article["quality_score"] += 1
                 all_articles.append(article)
         
-
-        # Load GitHub trending repos
-        if trending_data:
-            for repo in trending_data.get("repos", []):
-                article = {
-                    "title": f"{repo['repo']}: {repo['description']}" if repo.get('description') else repo['repo'],
-                    "link": repo.get("url", f"https://github.com/{repo['repo']}"),
-                    "snippet": repo.get("description", ""),
-                    "date": repo.get("pushed_at", ""),
-                    "source": "github-trending",
-                    "source_type": "github_trending",
-                    "topics": repo.get("topics", []),
-                    "stars": repo.get("stars", 0),
-                    "daily_stars_est": repo.get("daily_stars_est", 0),
-                    "forks": repo.get("forks", 0),
-                    "language": repo.get("language", ""),
-                    "quality_score": 5 + min(10, repo.get("daily_stars_est", 0) // 10),
-                }
-                all_articles.append(article)
         total_collected = len(all_articles)
         logger.info(f"Total articles collected: {total_collected}")
         
@@ -665,8 +698,6 @@ Examples:
                 "rss_articles": rss_data.get("total_articles", 0),
                 "twitter_articles": twitter_data.get("total_articles", 0),
                 "web_articles": web_data.get("total_articles", 0),
-                "github_articles": github_data.get("total_articles", 0),
-                "github_trending": trending_data.get("total", 0) if trending_data else 0,
                 "reddit_posts": reddit_data.get("total_posts", 0),
                 "total_input": total_collected
             },

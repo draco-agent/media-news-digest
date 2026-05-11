@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Remove inactive GitHub fetch/trending paths from the media pipeline.
+- Add media-specific topic priority and lightweight content classification before topic grouping.
+- Fix pipeline merge item count for `output_stats.total_articles`.
+- Refresh README/SKILL source counts and dependency guidance.
+
 ## v2.1.2 - 2026-05-11
 
 ### Fixed
@@ -16,7 +24,7 @@
 ### Added
 - `enrich-articles.py`: full-text enrichment for top articles (synced from tech v3.13.0)
 - `run-pipeline.py`: --enrich flag for article enrichment phase
-- `merge-sources.py`: GitHub trending support (inactive for media, no GitHub source)
+- `merge-sources.py`: enrichment-compatible merge updates
 
 ## v2.0.4 - 2026-03-01
 

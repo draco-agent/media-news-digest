@@ -2,10 +2,10 @@
 """
 Unified data collection pipeline for media-news-digest.
 
-Runs all 6 fetch steps (RSS, Twitter, GitHub, GitHub Trending, Reddit, Web) in parallel,
+Runs all 4 fetch steps (RSS, Twitter/X, Reddit, Web) in parallel,
 then merges + deduplicates + scores into a single output JSON.
 
-Replaces the agent's sequential 6-step tool-call loop with one command,
+Replaces the agent's sequential multi-step tool-call loop with one command,
 eliminating ~60-120s of LLM round-trip overhead.
 
 Usage:
@@ -82,6 +82,7 @@ def run_step(
                     or data.get("total_releases")
                     or data.get("total_results")
                     or data.get("total")
+                    or data.get("output_stats", {}).get("total_articles")
                     or 0
                 )
             except (json.JSONDecodeError, OSError):
@@ -133,8 +134,8 @@ def main() -> int:
     parser.add_argument("--verbose", "-v", action="store_true")
     parser.add_argument("--force", action="store_true", help="Force re-fetch ignoring caches")
     parser.add_argument("--enrich", action="store_true", help="Enable full-text enrichment for top articles")
-    parser.add_argument("--skip", type=str, default="", help="Comma-separated list of steps to skip (rss,twitter,github,trending,reddit,web)")
-    parser.add_argument("--only", type=str, default="", help="Comma-separated list of steps to run (rss,twitter,github,trending,reddit,web). Others are skipped.")
+    parser.add_argument("--skip", type=str, default="", help="Comma-separated list of steps to skip (rss,twitter,reddit,web)")
+    parser.add_argument("--only", type=str, default="", help="Comma-separated list of steps to run (rss,twitter,reddit,web). Others are skipped.")
     parser.add_argument("--reuse-dir", type=Path, default=None, help="Reuse existing intermediate directory instead of creating new one")
     parser.add_argument("--debug", action="store_true", help="Keep intermediate fetch outputs (rss.json, twitter.json, etc.) alongside final output")
 
@@ -147,7 +148,7 @@ def main() -> int:
     
     # --only takes precedence: skip everything not in the list
     if only_steps:
-        all_step_keys = {"rss", "twitter", "github", "github trending", "reddit", "web"}
+        all_step_keys = {"rss", "twitter", "reddit", "web"}
         skip_steps = all_step_keys - {k for k in all_step_keys if any(o in k for o in only_steps)}
         logger.info(f"🎯 --only {args.only} → running: {all_step_keys - skip_steps}")
 
@@ -157,11 +158,9 @@ def main() -> int:
         _run_dir = str(args.reuse_dir)
         os.makedirs(_run_dir, exist_ok=True)
     else:
-        _run_dir = tempfile.mkdtemp(prefix="td-pipeline-")
+        _run_dir = tempfile.mkdtemp(prefix="md-pipeline-")
     tmp_rss = Path(_run_dir) / "rss.json"
     tmp_twitter = Path(_run_dir) / "twitter.json"
-    tmp_github = Path(_run_dir) / "github.json"
-    tmp_trending = Path(_run_dir) / "trending.json"
     tmp_reddit = Path(_run_dir) / "reddit.json"
     tmp_web = Path(_run_dir) / "web.json"
     logger.info(f"📁 Run directory: {_run_dir}")
@@ -173,12 +172,10 @@ def main() -> int:
     common += ["--hours", str(args.hours)]
     verbose_flag = ["--verbose"] if args.verbose else []
 
-    # Define the 5 parallel fetch steps
+    # Define the 4 parallel fetch steps
     steps = [
         ("RSS", "fetch-rss.py", common + verbose_flag, tmp_rss),
         ("Twitter", "fetch-twitter.py", common + verbose_flag + (["--backend", args.twitter_backend] if args.twitter_backend else []), tmp_twitter),
-        ("GitHub", "fetch-github.py", common + verbose_flag, tmp_github),
-        ("GitHub Trending", "fetch-github.py", ["--trending", "--hours", str(args.hours)] + verbose_flag, tmp_trending),
         ("Reddit", "fetch-reddit.py", common + verbose_flag, tmp_reddit),
         ("Web", "fetch-web.py",
          ["--defaults", str(args.defaults)]
@@ -228,8 +225,7 @@ def main() -> int:
     logger.info("🔀 Merging & scoring...")
     merge_args = ["--verbose"] if args.verbose else []
     for flag, path in [("--rss", tmp_rss), ("--twitter", tmp_twitter),
-                       ("--github", tmp_github), ("--trending", tmp_trending), ("--reddit", tmp_reddit),
-                       ("--web", tmp_web)]:
+                       ("--reddit", tmp_reddit), ("--web", tmp_web)]:
         if path.exists():
             merge_args += [flag, str(path)]
     if args.archive_dir:

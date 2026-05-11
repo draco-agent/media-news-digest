@@ -4,8 +4,8 @@
 #   ./test-pipeline.sh                          # run all sources
 #   ./test-pipeline.sh --only twitter,rss       # only these source types
 #   ./test-pipeline.sh --skip web               # skip web search
-#   ./test-pipeline.sh --topics crypto           # only sources with these topics
-#   ./test-pipeline.sh --ids sama-twitter,openai-rss  # specific source IDs
+#   ./test-pipeline.sh --topics box-office,awards # only sources with these topics
+#   ./test-pipeline.sh --ids thr-rss,deadline-rss # specific source IDs
 #   ./test-pipeline.sh --hours 12               # custom time window
 #   ./test-pipeline.sh --keep                   # keep output dir after test
 #   ./test-pipeline.sh --twitter-backend twitterapiio  # force twitter backend
@@ -48,20 +48,20 @@ USAGE:
 
 OPTIONS:
   --only TYPES      Only run these source types (comma-separated)
-                    Values: rss, twitter, github, reddit, web
+                    Values: rss, twitter, reddit, web
                     Example: --only twitter,rss
 
   --skip TYPES      Skip these source types (comma-separated)
-                    Values: rss, twitter, github, reddit, web
+                    Values: rss, twitter, reddit, web
                     Example: --skip web,reddit
 
   --topics TOPICS   Only include sources matching these topics (comma-separated)
-                    Values: llm, ai-agent, frontier-tech, crypto
-                    Example: --topics crypto,llm
+                    Values: box-office, deals, china, production, upcoming, streaming, awards, festivals, reviews
+                    Example: --topics box-office,awards
 
   --ids IDS         Only include specific source IDs (comma-separated)
                     IDs are defined in config/defaults/sources.json
-                    Example: --ids sama-twitter,openai-rss,vitalik-twitter
+                    Example: --ids thr-rss,deadline-rss,boxofficemojo-twitter
 
   --hours N         Time window for fetching articles (default: 24)
                     Example: --hours 48
@@ -85,16 +85,17 @@ OPTIONS:
 EXAMPLES:
   ./test-pipeline.sh                                    # full pipeline, all sources
   ./test-pipeline.sh --only twitter --twitter-backend twitterapiio  # twitter only via twitterapi.io
-  ./test-pipeline.sh --topics crypto --hours 48 --keep  # crypto sources, 48h window
+  ./test-pipeline.sh --topics box-office --hours 48 --keep  # box office sources, 48h window
   ./test-pipeline.sh --skip web,reddit -v               # skip web+reddit, verbose
-  ./test-pipeline.sh --ids sama-twitter,karpathy-twitter --only twitter
+  ./test-pipeline.sh --ids boxofficemojo-twitter,thr-twitter --only twitter
 
 ENVIRONMENT:
   X_BEARER_TOKEN      Official X API v2 bearer token (for --backend official)
   TWITTERAPI_IO_KEY   twitterapi.io API key (for --backend twitterapiio)
   TWITTER_API_BACKEND Default twitter backend if --backend not given (official|twitterapiio|auto)
   BRAVE_API_KEY       Brave Search API key (for web fetch)
-  GITHUB_TOKEN        GitHub token (optional, increases GitHub API rate limits)
+  BRAVE_API_KEYS      Comma-separated Brave Search API keys (preferred)
+  TAVILY_API_KEY      Tavily Search API key (fallback web backend)
 HELP
             exit 0
             ;;
@@ -209,15 +210,6 @@ else
     SKIPPED=$((SKIPPED + 1))
 fi
 
-# GitHub
-if false && should_run "github"; then
-    run_step "fetch-github" python3 "$SCRIPT_DIR/fetch-github.py" --defaults "$DEFAULTS" --hours "$HOURS" --output "$OUTDIR/github.json" --force "${EXTRA_ARGS[@]}"
-    validate_json "$OUTDIR/github.json" "github"
-else
-    echo "⏭  fetch-github (skipped)"
-    SKIPPED=$((SKIPPED + 1))
-fi
-
 # Twitter
 if should_run "twitter"; then
     TWITTER_ARGS=("--defaults" "$DEFAULTS" "--hours" "$HOURS" "--output" "$OUTDIR/twitter.json" "--force" "${EXTRA_ARGS[@]}")
@@ -251,11 +243,11 @@ fi
 
 # Web search
 if should_run "web"; then
-    if [ -n "$BRAVE_API_KEY" ]; then
+    if [ -n "$BRAVE_API_KEY" ] || [ -n "$BRAVE_API_KEYS" ] || [ -n "$TAVILY_API_KEY" ]; then
         run_step "fetch-web" python3 "$SCRIPT_DIR/fetch-web.py" --defaults "$DEFAULTS" --freshness pd --output "$OUTDIR/web.json" --force "${EXTRA_ARGS[@]}"
         validate_json "$OUTDIR/web.json" "web"
     else
-        echo "⏭  fetch-web (no BRAVE_API_KEY)"
+        echo "⏭  fetch-web (no BRAVE_API_KEY, BRAVE_API_KEYS, or TAVILY_API_KEY)"
         SKIPPED=$((SKIPPED + 1))
     fi
 else
@@ -268,7 +260,6 @@ MERGE_ARGS=("--output" "$OUTDIR/merged.json")
 [ -f "$OUTDIR/rss.json" ]     && MERGE_ARGS+=("--rss" "$OUTDIR/rss.json")
 [ -f "$OUTDIR/twitter.json" ] && MERGE_ARGS+=("--twitter" "$OUTDIR/twitter.json")
 [ -f "$OUTDIR/web.json" ]     && MERGE_ARGS+=("--web" "$OUTDIR/web.json")
-# github not used in media-news-digest
 [ -f "$OUTDIR/reddit.json" ]  && MERGE_ARGS+=("--reddit" "$OUTDIR/reddit.json")
 
 if [ ${#MERGE_ARGS[@]} -gt 2 ]; then
