@@ -1,7 +1,7 @@
 ---
 name: media-news-digest
 description: Generate media & entertainment industry news digests. Covers Hollywood trades (THR, Deadline, Variety), box office, streaming, awards season, film festivals, and production news. Four-source data collection from RSS feeds, Twitter/X KOLs, Reddit, and web search. Pipeline-based scripts with retry mechanisms and deduplication. Supports Discord and email output with PDF attachments.
-version: "2.1.2"
+version: "2.1.3"
 homepage: https://github.com/draco-agent/media-news-digest
 source: https://github.com/draco-agent/media-news-digest
 metadata:
@@ -33,6 +33,15 @@ env:
   - name: TAVILY_API_KEY
     required: false
     description: Tavily Search API key (alternative web search backend)
+  - name: REDDIT_CLIENT_ID
+    required: false
+    description: Reddit API app client ID for OAuth fallback when public JSON is blocked
+  - name: REDDIT_CLIENT_SECRET
+    required: false
+    description: Reddit API app client secret for OAuth fallback when public JSON is blocked
+  - name: REDDIT_USERNAME
+    required: false
+    description: Optional Reddit username used only in the OAuth User-Agent string
 ---
 
 # Media News Digest
