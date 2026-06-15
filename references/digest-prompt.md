@@ -85,10 +85,11 @@ Select articles by **topic relevance first, then quality_score**. Articles in me
 **Topic relevance rules (MANDATORY):**
 - Box Office / 票房: only include items primarily about theatrical box office performance, grosses, opening weekends, domestic/international/worldwide totals, specialty box office, China/NA box office rankings, or release-performance milestones. Do **not** include celebrity deaths, TV interviews, livestream guides, sports/UFC, general politics, awards chatter, or unrelated entertainment pieces just because they have a high score.
 - Deals & Business / 行业交易: only include business deals, rights, acquisitions, contracts, layoffs/restructuring, studio/platform financial moves.
-- Upcoming Releases / 北美近期上映: only include theatrical release dates, openings, trailers tied to imminent releases, date changes, or release calendars; not generic TV/streaming news.
-- If a section has too few relevant items after filtering, use fewer items and explicitly say the section is sparse; never pad with unrelated high-score content.
-- Global off-topic exclusion: sports/NBA/UFC/MMA/general politics/celebrity gossip should be excluded from all topic sections unless the item is directly about a film/TV project, theatrical box office, streaming platform strategy, rights/business deal, awards campaign, or festival/programming decision. A movie meme tied to a sports event is not enough; a celebrity talking about a sports team is not enough; a livestream shopping/guide article for a sports event is not enough.
-- Deep Reads must follow the same relevance rule: do not include sports/UFC/politics/gossip long reads unless they directly illuminate the film/TV/streaming business.
+- Upcoming Releases / 北美近期上映: only include specific theatrical releases, openings, trailers tied to imminent releases, date changes, or dated release slates that contain actual new information; not generic TV/streaming news.
+- Do **not** include static reference pages, portal/home pages, data dashboards, evergreen release calendars, Wikipedia/list pages, ticketing/search pages, or "entry point" URLs as news items (e.g. Maoyan dashboard/home, Fandango in-theaters page, Movie Insider calendar pages, Metacritic upcoming calendar, Wikipedia highest-grossing list). Use them only as background/source-checks; never turn them into digest bullets.
+- If a section has too few relevant items after filtering, use fewer items or omit the section; never pad with unrelated high-score content, generic portals, static reference pages, or source dashboards.
+- Global off-topic exclusion: sports/NBA/UFC/MMA/general politics/music-only pieces/celebrity gossip/old anecdotes/viral memes should be excluded from all topic sections unless the item is directly about a film/TV project, theatrical box office, streaming platform strategy, rights/business deal, awards campaign, or festival/programming decision. A movie meme tied to a sports event is not enough; a celebrity talking about a sports team is not enough; a livestream shopping/guide article for a sports event is not enough; a political/music culture retrospective with celebrities is not enough; an SNL sketch anecdote is not enough.
+- Deep Reads must follow the same relevance rule: do not include sports/UFC/politics/music-only/gossip/SNL/celebrity-anecdote long reads unless they directly illuminate the film/TV/streaming business.
 
 Each article line must include its quality score using 🔥 prefix. Format: `🔥{score} | {summary with link}`. This makes scoring transparent and helps readers identify the most important news at a glance.
 
@@ -102,7 +103,7 @@ From `topics.json`: `emoji` + `label` headers, `<ITEMS_PER_SECTION>` items each.
 
 **⚠️ CRITICAL: Output articles in EXACTLY the same order as summarize-merged.py output (quality_score descending). Do NOT reorder, group by subtopic, or rearrange. The 🔥 scores must appear in strictly decreasing order within each section.**
 
-Every topic **must appear** — even with 1-2 items. If sparse, note "本日该板块较少".
+Only include topic sections that have genuinely relevant news items. If a topic is sparse, include fewer items or omit it entirely; do not create filler bullets or static-source bullets just to make every topic appear.
 
 ### Translation Requirements (MANDATORY)
 
