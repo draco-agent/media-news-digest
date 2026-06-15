@@ -87,6 +87,8 @@ Select articles by **topic relevance first, then quality_score**. Articles in me
 - Deals & Business / 行业交易: only include business deals, rights, acquisitions, contracts, layoffs/restructuring, studio/platform financial moves.
 - Upcoming Releases / 北美近期上映: only include theatrical release dates, openings, trailers tied to imminent releases, date changes, or release calendars; not generic TV/streaming news.
 - If a section has too few relevant items after filtering, use fewer items and explicitly say the section is sparse; never pad with unrelated high-score content.
+- Global off-topic exclusion: sports/NBA/UFC/MMA/general politics/celebrity gossip should be excluded from all topic sections unless the item is directly about a film/TV project, theatrical box office, streaming platform strategy, rights/business deal, awards campaign, or festival/programming decision. A movie meme tied to a sports event is not enough; a celebrity talking about a sports team is not enough; a livestream shopping/guide article for a sports event is not enough.
+- Deep Reads must follow the same relevance rule: do not include sports/UFC/politics/gossip long reads unless they directly illuminate the film/TV/streaming business.
 
 Each article line must include its quality score using 🔥 prefix. Format: `🔥{score} | {summary with link}`. This makes scoring transparent and helps readers identify the most important news at a glance.
 
