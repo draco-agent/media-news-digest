@@ -80,7 +80,13 @@ python3 <SKILL_DIR>/scripts/summarize-merged.py --input /tmp/md-merged.json --to
 ```
 Use this output to select articles — **do NOT write ad-hoc Python to parse the JSON**. Apply the template from `<SKILL_DIR>/references/templates/<TEMPLATE>.md`.
 
-Select articles **purely by quality_score regardless of source type**. Articles in merged JSON are already sorted by quality_score descending within each topic — respect this order. For Reddit posts, append `*[Reddit r/xxx, {{score}}↑]*`.
+Select articles by **topic relevance first, then quality_score**. Articles in merged JSON may contain noisy cross-topic matches; before selecting any item, verify it actually belongs in the current topic using the topic description and must_include intent. Reject off-topic items even if they have high quality_score. After relevance filtering, preserve quality_score descending order. For Reddit posts, append `*[Reddit r/xxx, {{score}}↑]*`.
+
+**Topic relevance rules (MANDATORY):**
+- Box Office / 票房: only include items primarily about theatrical box office performance, grosses, opening weekends, domestic/international/worldwide totals, specialty box office, China/NA box office rankings, or release-performance milestones. Do **not** include celebrity deaths, TV interviews, livestream guides, sports/UFC, general politics, awards chatter, or unrelated entertainment pieces just because they have a high score.
+- Deals & Business / 行业交易: only include business deals, rights, acquisitions, contracts, layoffs/restructuring, studio/platform financial moves.
+- Upcoming Releases / 北美近期上映: only include theatrical release dates, openings, trailers tied to imminent releases, date changes, or release calendars; not generic TV/streaming news.
+- If a section has too few relevant items after filtering, use fewer items and explicitly say the section is sparse; never pad with unrelated high-score content.
 
 Each article line must include its quality score using 🔥 prefix. Format: `🔥{score} | {summary with link}`. This makes scoring transparent and helps readers identify the most important news at a glance.
 
