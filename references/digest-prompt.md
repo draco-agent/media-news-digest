@@ -96,6 +96,20 @@ From `topics.json`: `emoji` + `label` headers, `<ITEMS_PER_SECTION>` items each.
 
 Every topic **must appear** — even with 1-2 items. If sparse, note "本日该板块较少".
 
+### Translation Requirements (MANDATORY)
+
+Every news item must be localized into Chinese, not merely wrapped with a generic Chinese phrase.
+
+- For each bullet, translate or rewrite the headline/body into a natural Simplified Chinese brief.
+- Do **not** use the raw English headline or raw tweet text as the main bold title.
+- Recommended format:
+  `• 🔥{score} | **中文标题**（Original English Title, optional）— 1-2 句中文简讯，说明 who/what/why-it-matters。`
+- Keeping English proper nouns, film titles without established Chinese names, company names, source names, metrics, and URLs is allowed.
+- If a Chinese title is uncertain, keep the English film/person name inside the Chinese sentence rather than outputting an English-only brief.
+- KOL/Twitter items must summarize the tweet content in Chinese; never paste the raw English tweet as the brief.
+- Deep Reads must also have Chinese titles/summaries.
+- Before delivery, scan the archive Markdown: if a bullet starts with a mostly-English bold title or raw English tweet, revise it into Chinese before sending.
+
 ### Fixed Sections (after topics)
 
 **📢 KOL Updates** — Twitter KOLs. Format:
