@@ -15,12 +15,15 @@ Requirements:
 """
 
 import argparse
+import base64
 import html
 import re
 import sys
 import logging
+from functools import lru_cache
 from pathlib import Path
 from urllib.parse import urlparse
+from urllib.request import urlopen
 
 
 # Emoji presentation characters used in digest headings, badges, and tables.
@@ -35,17 +38,55 @@ EMOJI_RE = re.compile(
 )
 
 
-def wrap_emoji_spans(html_fragment: str) -> str:
-    """Wrap emoji codepoints in spans with the dedicated emoji font.
+def _twemoji_name(emoji_text: str) -> str:
+    """Return Twemoji asset name for an emoji sequence."""
+    cps = []
+    for ch in emoji_text:
+        cp = ord(ch)
+        if cp == 0xFE0F:
+            continue
+        cps.append(f"{cp:x}")
+    return "-".join(cps)
 
-    This operates after HTML escaping/inline markdown conversion, and skips tags
-    so attributes/URLs are never modified.
+
+@lru_cache(maxsize=128)
+def _twemoji_data_uri(name: str) -> str:
+    cache_dir = Path.home() / ".cache" / "media-news-digest" / "twemoji"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    svg_path = cache_dir / f"{name}.svg"
+    if not svg_path.exists():
+        url = f"https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/{name}.svg"
+        with urlopen(url, timeout=10) as resp:
+            svg_path.write_bytes(resp.read())
+    data = base64.b64encode(svg_path.read_bytes()).decode("ascii")
+    return f"data:image/svg+xml;base64,{data}"
+
+
+def _emoji_replacement(match: re.Match) -> str:
+    emoji_text = match.group(1)
+    name = _twemoji_name(emoji_text)
+    try:
+        src = _twemoji_data_uri(name)
+        return f'<img class="emoji" alt="{escape(emoji_text)}" src="{src}">'
+    except Exception as exc:
+        logging.debug("Twemoji fallback failed for %s (%s): %s", emoji_text, name, exc)
+        return f'<span class="emoji">{emoji_text}</span>'
+
+
+def wrap_emoji_spans(html_fragment: str) -> str:
+    """Render emoji as Twemoji SVG images for reliable PDF output.
+
+    Noto Color Emoji can be rendered as tiny bitmap fragments by
+    WeasyPrint/Pango on some Linux hosts. Twemoji SVG keeps the existing visual
+    style while avoiding host emoji-font quirks. This operates after HTML
+    escaping/inline markdown conversion and skips tags, so attributes/URLs are
+    never modified.
     """
     parts = re.split(r'(<[^>]+>)', html_fragment)
     for i, part in enumerate(parts):
         if not part or part.startswith('<'):
             continue
-        parts[i] = EMOJI_RE.sub(r'<span class="emoji">\1</span>', part)
+        parts[i] = EMOJI_RE.sub(_emoji_replacement, part)
     return ''.join(parts)
 
 
@@ -279,7 +320,7 @@ PDF_CSS = """
     size: A4;
     margin: 2cm 2.5cm;
     @top-center {
-        content: "Tech Digest";
+        content: "Media Digest";
         font-size: 9px;
         color: #999;
         font-family: 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif;
@@ -446,9 +487,11 @@ h1 + blockquote {
 
 /* Emoji rendering */
 .emoji {
-    font-family: 'Noto Color Emoji PDF', 'Noto Color Emoji', emoji;
-    font-weight: 400;
-    font-style: normal;
+    display: inline-block;
+    width: 1.05em;
+    height: 1.05em;
+    margin: 0 0.06em;
+    vertical-align: -0.16em;
 }
 
 body {
